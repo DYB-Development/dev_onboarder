@@ -42,6 +42,14 @@ module DevOnboarder
       assert_includes @out.string, "not met  databases — Databases exist"
     end
 
+    def test_a_requirement_that_is_not_met_and_has_no_fix_shows_its_instruction
+      declare 'requirement :api_key, group: :secrets, purpose: "Price key", check: "check-key", ' \
+              'instruction: "Ask the team lead for the price key"'
+      run_cli
+
+      assert_includes @out.string, "         Ask the team lead for the price key"
+    end
+
     private
 
     def declare(requirements)

@@ -18,7 +18,7 @@ module DevOnboarder
     end
 
     def call
-      outcomes.each { |outcome| @out.puts line_for(outcome) }
+      outcomes.each { |outcome| @out.puts lines_for(outcome) }
     end
 
     private
@@ -26,6 +26,14 @@ module DevOnboarder
     def outcomes
       Setup.new(requirements: Requirements.load(File.join(@dir, REQUIREMENTS_FILE)),
                 record: Record.new(File.join(@dir, RECORD_FILE)), shell: @shell, clock: @clock).call
+    end
+
+    def lines_for(outcome)
+      [line_for(outcome), instruction_for(outcome)].compact
+    end
+
+    def instruction_for(outcome)
+      "         #{outcome.requirement.instruction}" unless outcome.met
     end
 
     def line_for(outcome)
