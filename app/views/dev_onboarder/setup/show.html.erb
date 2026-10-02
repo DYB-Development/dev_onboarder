@@ -1,0 +1,22 @@
+<%
+  requirement_columns = [
+    Keystone::Ui::Column.new(:requirement, "Requirement"),
+    Keystone::Ui::Column.new(:purpose, "Purpose")
+  ]
+%>
+
+<%= ui_page do %>
+  <% @overview.groups.each do |group| %>
+    <%
+      requirement_rows = group.rows.map do |row|
+        {
+          requirement: row.requirement.key.to_s,
+          purpose: row.requirement.purpose
+        }
+      end
+    %>
+    <%= ui_section do %>
+      <%= ui_data_table(items: requirement_rows, columns: requirement_columns) %>
+    <% end %>
+  <% end %>
+<% end %>
