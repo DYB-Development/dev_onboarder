@@ -15,7 +15,7 @@
         }
       end
     %>
-    <%= ui_section do %>
+    <%= ui_section(title: group.name.to_s.tr("_", " ").capitalize) do %>
       <%= ui_data_table(items: requirement_rows, columns: requirement_columns) %>
     <% end %>
   <% end %>

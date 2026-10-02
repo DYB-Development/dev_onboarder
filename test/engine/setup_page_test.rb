@@ -26,5 +26,11 @@ module DevOnboarder
 
       assert_includes response.body, "Databases exist"
     end
+
+    def test_the_page_names_each_group_of_requirements
+      get "/setup"
+
+      assert_includes response.body, "Repo setup"
+    end
   end
 end
