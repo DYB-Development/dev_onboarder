@@ -15,7 +15,8 @@ module DevOnboarder
     def ruby_version
       named = File.read(File.join(@dir, ".ruby-version")).strip
       requirement :ruby_version, group: :machine_tools, purpose: "Ruby #{named} is the running Ruby",
-                                 check: %(test "$(ruby -e 'print RUBY_VERSION')" = "#{named}")
+                                 check: %(test "$(ruby -e 'print RUBY_VERSION')" = "#{named}"),
+                                 instruction: "This repo names Ruby #{named} and you are running Ruby #{RUBY_VERSION}."
     end
 
     private

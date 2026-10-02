@@ -53,6 +53,13 @@ module DevOnboarder
       refute passes?(declare("ruby_version"))
     end
 
+    def test_the_ruby_version_requirement_shows_the_named_and_the_running_ruby
+      write ".ruby-version", "0.0.1\n"
+
+      assert_equal "This repo names Ruby 0.0.1 and you are running Ruby #{RUBY_VERSION}.",
+                   declare("ruby_version").instruction
+    end
+
     private
 
     def write(name, contents)
