@@ -37,7 +37,20 @@ module DevOnboarder
     def status_lines
       return "Nothing has changed since your last setup." if findings.empty?
 
-      findings.map { |finding| Lines.for_finding(finding) }
+      findings_of(nil).map { |finding| Lines.for_finding(finding) } + requirements.features.flat_map do |declared|
+        feature_lines(declared)
+      end
+    end
+
+    def feature_lines(declared)
+      listed = findings_of(declared.name)
+      return [] if listed.empty?
+
+      ["#{declared.name} — #{declared.description}"] + listed.map { |finding| "  #{Lines.for_finding(finding)}" }
+    end
+
+    def findings_of(feature_name)
+      findings.select { |finding| finding.requirement.feature == feature_name }
     end
 
     def report_features

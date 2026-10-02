@@ -172,6 +172,13 @@ module DevOnboarder
       assert_equal "ready      payments — Take a test payment\n", @out.string
     end
 
+    def test_status_lists_a_features_new_requirement_under_that_feature
+      declare PAYMENTS
+      run_cli(["status"])
+
+      assert_includes @out.string, "payments — Take a test payment\n  new      payment_key — Payment test key is set\n"
+    end
+
     private
 
     def declare(requirements)
