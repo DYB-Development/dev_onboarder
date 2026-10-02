@@ -61,13 +61,20 @@ class SmokeTest < Minitest::Test
     assert_equal "not ready  payments — Take a test payment\n", run_command("features").first
   end
 
+  def test_the_command_lists_a_declared_variable_the_environment_holds_as_met
+    declare %(env "DEV_ONBOARDER_SMOKE_KEY", from: "the vendor dashboard"\n)
+
+    assert_equal "met      dev_onboarder_smoke_key — DEV_ONBOARDER_SMOKE_KEY is set\n",
+                 run_command(environment: { "DEV_ONBOARDER_SMOKE_KEY" => "abc123" }).first
+  end
+
   private
 
   def declare(requirements)
     File.write(File.join(@dir, "Setupfile"), requirements)
   end
 
-  def run_command(*)
-    Open3.capture2e("ruby", "-I", LIB, EXECUTABLE, *, chdir: @dir)
+  def run_command(*, environment: {})
+    Open3.capture2e(environment, "ruby", "-I", LIB, EXECUTABLE, *, chdir: @dir)
   end
 end

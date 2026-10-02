@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+## [0.5.0]
+
+- `env` and `key_file` declare secrets and keys requirements in one line each.
+- Setup asks for a missing variable's value and stores it in the repo's ignored `.env` file.
+- `DevOnboarder::EnvFile#load_into` loads that file into the environment when an app starts.
+
 ## [0.4.0]
 
 - `program`, `ruby_version` and `brewfile` declare machine tools requirements in one line each.

@@ -23,6 +23,20 @@ module DevOnboarder
       end
     end
 
+    class Keyboard
+      def initialize(typed)
+        @typed = typed
+      end
+
+      def tty?
+        true
+      end
+
+      def noecho
+        yield StringIO.new(@typed)
+      end
+    end
+
     def setup
       @dir = Dir.mktmpdir
       @out = StringIO.new
@@ -186,15 +200,34 @@ module DevOnboarder
       assert_equal 0, run_cli(["status"])
     end
 
+    def test_the_command_succeeds_when_only_an_optional_variable_is_missing
+      declare 'env "PRICE_KEY", from: "the vendor dashboard", optional: true'
+
+      assert_equal 0, run_cli
+    end
+
+    def test_a_value_typed_for_a_missing_variable_is_stored_in_the_repos_environment_file
+      declare 'env "PRICE_KEY", from: "the vendor dashboard"'
+      run_cli(passing: ["git check-ignore --quiet .env"], input: Keyboard.new("abc123\n"))
+
+      assert_equal "PRICE_KEY=abc123\n", File.read(File.join(@dir, ".env"))
+    end
+
+    def test_status_succeeds_when_only_an_optional_variable_is_listed
+      declare 'env "PRICE_KEY", from: "the vendor dashboard", optional: true'
+
+      assert_equal 0, run_cli(["status"])
+    end
+
     private
 
     def declare(requirements)
       File.write(File.join(@dir, "Setupfile"), requirements)
     end
 
-    def run_cli(argv = [], passing: [])
+    def run_cli(argv = [], passing: [], input: StringIO.new)
       @shell = ScriptedShell.new(passing)
-      CLI.new(argv, out: @out, dir: @dir, shell: @shell, clock: -> { NOW }).call
+      CLI.new(argv, out: @out, dir: @dir, shell: @shell, clock: -> { NOW }, input: input).call
     end
   end
 end

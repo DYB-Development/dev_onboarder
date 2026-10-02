@@ -2,6 +2,7 @@
 
 require_relative "lines"
 require_relative "requirements"
+require_relative "secret_prompt"
 require_relative "setup"
 require_relative "shell"
 require_relative "status"
@@ -10,8 +11,10 @@ module DevOnboarder
   class CLI
     REQUIREMENTS_FILE = "Setupfile"
     RECORD_FILE = ".dev_onboarder.json"
+    ENV_FILE = ".env"
 
-    def initialize(argv, out: $stdout, dir: Dir.pwd, shell: Shell.new, clock: -> { Time.now })
+    def initialize(argv, out: $stdout, dir: Dir.pwd, shell: Shell.new, clock: -> { Time.now }, input: $stdin)
+      @input = input
       @argv = argv
       @out = out
       @dir = dir
@@ -31,7 +34,7 @@ module DevOnboarder
 
     def report_status
       @out.puts status_lines
-      findings_of(nil).empty? ? 0 : 1
+      findings_of(nil).all? { |finding| finding.requirement.optional } ? 0 : 1
     end
 
     def status_lines
@@ -68,9 +71,17 @@ module DevOnboarder
 
     def run_setup
       outcomes = Setup.new(requirements: requirements, record: record, shell: @shell, clock: @clock,
-                           feature: feature).call
+                           feature: feature, secrets: secret_prompt).call
       outcomes.each { |outcome| @out.puts Lines.for_outcome(outcome) }
-      outcomes.select { |outcome| outcome.requirement.feature == feature }.all?(&:met) ? 0 : 1
+      outcomes.select { |outcome| required?(outcome.requirement) }.all?(&:met) ? 0 : 1
+    end
+
+    def required?(requirement)
+      requirement.feature == feature && !requirement.optional
+    end
+
+    def secret_prompt
+      SecretPrompt.new(env_file: EnvFile.new(File.join(@dir, ENV_FILE)), input: @input, out: @out, shell: @shell)
     end
 
     def feature

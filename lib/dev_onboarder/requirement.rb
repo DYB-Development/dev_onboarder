@@ -4,8 +4,10 @@ require "digest"
 require "json"
 
 module DevOnboarder
-  Requirement = Data.define(:key, :group, :purpose, :check, :fix, :instruction, :feature) do
-    def initialize(key:, group:, purpose:, check:, fix: nil, instruction: nil, feature: nil)
+  Requirement = Data.define(:key, :group, :purpose, :check, :fix, :instruction, :feature, :variable,
+                            :optional) do
+    def initialize(key:, group:, purpose:, check:, fix: nil, instruction: nil, feature: nil, variable: nil,
+                   optional: false)
       super
     end
 

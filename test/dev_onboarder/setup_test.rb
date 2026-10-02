@@ -17,10 +17,29 @@ module DevOnboarder
         @commands = []
       end
 
+      def pass(*commands)
+        @passing.concat(commands)
+      end
+
       def succeeds?(command)
         @commands << command
         @passing.concat(@passing_after.fetch(command, []))
         @passing.include?(command)
+      end
+    end
+
+    class RecordingSecrets
+      attr_reader :asked
+
+      def initialize(shell: nil, supplying: [])
+        @asked = []
+        @shell = shell
+        @supplying = supplying
+      end
+
+      def collect(requirement)
+        @asked << requirement.key
+        @shell&.pass(*@supplying)
       end
     end
 
@@ -108,6 +127,28 @@ module DevOnboarder
       assert_includes shell.commands, "fix-key"
     end
 
+    def test_a_developer_is_asked_for_a_variable_that_is_not_set
+      secrets = RecordingSecrets.new
+      run_setup([requirement(check: "check-key", variable: "PRICE_KEY")], ScriptedShell.new, secrets: secrets)
+
+      assert_equal [:databases], secrets.asked
+    end
+
+    def test_a_variable_the_developer_supplied_is_met
+      shell = ScriptedShell.new
+      secrets = RecordingSecrets.new(shell: shell, supplying: ["check-key"])
+      outcomes = run_setup([requirement(check: "check-key", variable: "PRICE_KEY")], shell, secrets: secrets)
+
+      assert outcomes.first.met
+    end
+
+    def test_a_run_that_names_no_feature_does_not_ask_for_a_features_variable
+      secrets = RecordingSecrets.new
+      run_setup([payment_key(variable: "PAYMENT_KEY")], ScriptedShell.new, secrets: secrets)
+
+      assert_empty secrets.asked
+    end
+
     private
 
     def requirement(**attributes)
@@ -119,8 +160,9 @@ module DevOnboarder
                       check: "check-key", **attributes)
     end
 
-    def run_setup(requirements, shell, feature: nil)
-      Setup.new(requirements: requirements, record: @record, shell: shell, clock: -> { NOW }, feature: feature).call
+    def run_setup(requirements, shell, feature: nil, secrets: nil)
+      Setup.new(requirements: requirements, record: @record, shell: shell, clock: -> { NOW }, feature: feature,
+                secrets: secrets).call
     end
   end
 end
