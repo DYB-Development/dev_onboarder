@@ -101,6 +101,13 @@ module DevOnboarder
       refute_includes shell.commands, "fix-db"
     end
 
+    def test_a_run_that_names_a_feature_runs_that_features_fix
+      shell = ScriptedShell.new
+      run_setup([payment_key(fix: "fix-key")], shell, feature: :payments)
+
+      assert_includes shell.commands, "fix-key"
+    end
+
     private
 
     def requirement(**attributes)
