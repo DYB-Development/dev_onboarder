@@ -41,6 +41,11 @@ module DevOnboarder
       refute passes?(declare('key_file "master.key", from: "the team lead"'))
     end
 
+    def test_a_declared_variable_says_where_a_developer_gets_its_value
+      assert_equal "Get it from the vendor dashboard.",
+                   declare(%(env "#{VARIABLE}", from: "the vendor dashboard")).instruction
+    end
+
     private
 
     def write(name, contents)
