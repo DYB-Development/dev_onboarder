@@ -9,5 +9,9 @@ module DevOnboarder
     def fixable?
       !fix.nil?
     end
+
+    def fingerprint
+      check
+    end
   end
 end
