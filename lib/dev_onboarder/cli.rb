@@ -20,7 +20,10 @@ module DevOnboarder
     end
 
     def call
-      @argv.first == "status" ? report_status : run_setup
+      return report_status if @argv.first == "status"
+      return report_unknown_feature if feature && !declared_feature?
+
+      run_setup
     end
 
     private
@@ -37,6 +40,15 @@ module DevOnboarder
       findings.map { |finding| finding_line(finding) }
     end
 
+    def finding_line(finding)
+      "#{STATE_LABELS.fetch(finding.state)}  #{finding.requirement.key} — #{finding.requirement.purpose}"
+    end
+
+    def report_unknown_feature
+      @out.puts "No feature named #{feature}."
+      1
+    end
+
     def run_setup
       outcomes = Setup.new(requirements: requirements, record: record, shell: @shell, clock: @clock,
                            feature: feature).call
@@ -44,16 +56,16 @@ module DevOnboarder
       outcomes.select { |outcome| outcome.requirement.feature == feature }.all?(&:met) ? 0 : 1
     end
 
-    def finding_line(finding)
-      "#{STATE_LABELS.fetch(finding.state)}  #{finding.requirement.key} — #{finding.requirement.purpose}"
-    end
-
     def feature
       @argv[1]&.to_sym
     end
 
+    def declared_feature?
+      requirements.features.any? { |declared| declared.name == feature }
+    end
+
     def requirements
-      Requirements.load(File.join(@dir, REQUIREMENTS_FILE))
+      @requirements ||= Requirements.load(File.join(@dir, REQUIREMENTS_FILE))
     end
 
     def record

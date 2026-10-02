@@ -149,6 +149,13 @@ module DevOnboarder
       assert_equal 1, run_cli(%w[setup payments], passing: ["check-db"])
     end
 
+    def test_setting_up_a_feature_the_repo_does_not_declare_says_so
+      declare PAYMENTS
+      run_cli(%w[setup paymnets])
+
+      assert_equal "No feature named paymnets.\n", @out.string
+    end
+
     private
 
     def declare(requirements)
