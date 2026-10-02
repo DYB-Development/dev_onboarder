@@ -35,6 +35,12 @@ module DevOnboarder
       assert_equal :new, overview.groups.first.rows.first.state
     end
 
+    def test_a_requirement_the_last_run_met_is_listed_as_met
+      record_met(:databases)
+
+      assert_equal :met, overview.groups.first.rows.first.state
+    end
+
     private
 
     def overview

@@ -22,7 +22,7 @@ module DevOnboarder
     private
 
     def row_for(requirement)
-      Row.new(requirement: requirement, state: states.fetch(requirement.key))
+      Row.new(requirement: requirement, state: states.fetch(requirement.key, :met))
     end
 
     def states
