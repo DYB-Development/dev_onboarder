@@ -52,6 +52,13 @@ module DevOnboarder
       assert_includes shell.commands, "fix-db"
     end
 
+    def test_a_requirement_its_fix_repaired_is_met
+      shell = ScriptedShell.new(passing_after: { "fix-db" => ["check-db"] })
+      outcomes = run_setup([requirement(check: "check-db", fix: "fix-db")], shell)
+
+      assert outcomes.first.met
+    end
+
     private
 
     def requirement(**attributes)

@@ -25,9 +25,15 @@ module DevOnboarder
     end
 
     def met?(requirement)
-      met = @shell.succeeds?(requirement.check)
-      @shell.succeeds?(requirement.fix) if !met && requirement.fixable?
-      met
+      return true if check_passes?(requirement)
+      return false unless requirement.fixable?
+
+      @shell.succeeds?(requirement.fix)
+      check_passes?(requirement)
+    end
+
+    def check_passes?(requirement)
+      @shell.succeeds?(requirement.check)
     end
   end
 end
