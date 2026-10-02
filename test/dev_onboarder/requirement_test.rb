@@ -11,5 +11,12 @@ module DevOnboarder
 
       assert_predicate requirement, :fixable?
     end
+
+    def test_a_requirement_without_a_fix_command_is_not_fixable
+      requirement = Requirement.new(key: :api_key, group: :secrets, purpose: "Price key",
+                                    check: "false", instruction: "Ask the team lead")
+
+      refute_predicate requirement, :fixable?
+    end
   end
 end

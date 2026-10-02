@@ -7,7 +7,7 @@ module DevOnboarder
     end
 
     def fixable?
-      true
+      !fix.nil?
     end
   end
 end
