@@ -17,6 +17,8 @@
 <%= ui_page do %>
   <% if @overview.notice.present? %>
     <%= ui_alert(message: @overview.notice, type: :warning) %>
+  <% else %>
+    <%= ui_alert(message: "Everything outside a feature is set up.", type: :success) %>
   <% end %>
 
   <% @overview.groups.each do |group| %>

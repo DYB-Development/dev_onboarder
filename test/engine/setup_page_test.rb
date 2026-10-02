@@ -6,6 +6,7 @@ require "action_dispatch/testing/integration"
 
 module DevOnboarder
   class SetupPageTest < ActionDispatch::IntegrationTest
+    CHECKED_AT = Time.utc(2026, 10, 2, 14, 30)
     SETUPFILE = <<~RUBY
       requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"
       feature :payments, "Take a test payment" do
@@ -19,6 +20,14 @@ module DevOnboarder
 
     def teardown
       FileUtils.rm_f([Rails.root.join("Setupfile"), Rails.root.join(".dev_onboarder.json")])
+    end
+
+    def record_everything_met
+      requirements = Requirements.load(Rails.root.join("Setupfile").to_s)
+      results = requirements.to_h do |requirement|
+        [requirement.key, Result.new(met: true, checked_at: CHECKED_AT, fingerprint: requirement.fingerprint)]
+      end
+      Record.new(Rails.root.join(".dev_onboarder.json").to_s).save(results)
     end
 
     def test_the_page_lists_a_requirement_with_what_it_is_for
@@ -49,6 +58,13 @@ module DevOnboarder
       get "/setup"
 
       assert_includes response.body, "dev_onboarder: 1 requirement needs setup. Run bundle exec dev_onboarder."
+    end
+
+    def test_the_page_says_so_when_everything_outside_a_feature_is_set_up
+      record_everything_met
+      get "/setup"
+
+      assert_includes response.body, "Everything outside a feature is set up."
     end
   end
 end
