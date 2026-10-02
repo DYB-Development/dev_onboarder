@@ -38,5 +38,12 @@ module DevOnboarder
 
       assert_equal "abc123", Record.new(@path).result_for(:databases).fingerprint
     end
+
+    def test_saving_a_result_keeps_the_results_already_recorded
+      Record.new(@path).save(databases: Result.new(met: true, checked_at: CHECKED_AT))
+      Record.new(@path).save(payment_key: Result.new(met: false, checked_at: CHECKED_AT))
+
+      assert Record.new(@path).result_for(:databases).met
+    end
   end
 end
