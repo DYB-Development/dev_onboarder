@@ -179,6 +179,13 @@ module DevOnboarder
       assert_includes @out.string, "payments — Take a test payment\n  new      payment_key — Payment test key is set\n"
     end
 
+    def test_status_succeeds_when_only_a_features_requirement_is_listed
+      declare PAYMENTS
+      run_cli(passing: ["check-db"])
+
+      assert_equal 0, run_cli(["status"])
+    end
+
     private
 
     def declare(requirements)
