@@ -46,6 +46,11 @@ module DevOnboarder
                    declare(%(env "#{VARIABLE}", from: "the vendor dashboard")).instruction
     end
 
+    def test_a_declared_key_file_says_who_a_developer_asks_for_it
+      assert_equal "Ask the team lead for master.key.",
+                   declare('key_file "master.key", from: "the team lead"').instruction
+    end
+
     private
 
     def write(name, contents)
