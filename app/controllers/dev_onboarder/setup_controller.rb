@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module DevOnboarder
-  class SetupController < ActionController::Base
+  class SetupController < DevOnboarder.base_controller.constantize
     helper KeystoneUiHelper
 
     def show

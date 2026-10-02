@@ -97,5 +97,11 @@ module DevOnboarder
 
       assert_select "h1", text: "Setup"
     end
+
+    def test_the_page_is_drawn_inside_the_layout_of_the_controller_the_app_names
+      get "/setup"
+
+      assert_select "body[data-layout=host]"
+    end
   end
 end

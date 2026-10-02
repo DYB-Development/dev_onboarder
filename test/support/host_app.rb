@@ -14,5 +14,14 @@ class HostApp < Rails::Application
   config.logger = Logger.new(nil)
 end
 
+class ApplicationController < ActionController::Base
+  layout "host"
+end
+
+DevOnboarder.base_controller = "ApplicationController"
+
+FileUtils.mkdir_p(HostApp.root.join("app/views/layouts"))
+File.write(HostApp.root.join("app/views/layouts/host.html.erb"), '<body data-layout="host"><%= yield %></body>')
+
 HostApp.initialize!
 HostApp.routes.draw { mount DevOnboarder::Engine, at: "/setup" }
