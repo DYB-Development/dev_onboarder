@@ -16,6 +16,12 @@ module DevOnboarder
     attr_reader :features
 
     def self.load(path)
+      raise Error, "This repo has no Setupfile, so there is nothing to set up." unless File.exist?(path)
+
+      evaluate(path)
+    end
+
+    def self.evaluate(path)
       new(path).tap { |requirements| requirements.instance_eval(File.read(path), path) }
     rescue ScriptError, StandardError => e
       raise Error, "Setupfile line #{line_of(e, path)}: #{reason_of(e, path)}"

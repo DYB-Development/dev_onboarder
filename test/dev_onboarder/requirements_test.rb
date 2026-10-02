@@ -68,6 +68,12 @@ module DevOnboarder
       assert_equal "Setupfile line 3: databases is already declared on line 1", error_from(contents)
     end
 
+    def test_a_repo_with_no_requirements_file_is_reported_as_having_none
+      error = assert_raises(DevOnboarder::Error) { Requirements.load("/a/repo/with/no/Setupfile") }
+
+      assert_equal "This repo has no Setupfile, so there is nothing to set up.", error.message
+    end
+
     private
 
     def load_setupfile(contents)
