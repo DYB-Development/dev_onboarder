@@ -44,5 +44,31 @@ module DevOnboarder
                      Requirements.load(path).features
       end
     end
+
+    def test_an_error_in_a_requirements_file_is_reported_with_the_line_it_is_on
+      contents = <<~RUBY
+        requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "true"
+        requirment :seeds, group: :repo_setup, purpose: "Seed data is loaded", check: "true"
+      RUBY
+
+      assert_match(/\ASetupfile line 2: undefined method .requirment./, error_from(contents))
+    end
+
+    private
+
+    def load_setupfile(contents)
+      Dir.mktmpdir do |dir|
+        path = File.join(dir, "Setupfile")
+        File.write(path, contents)
+        Requirements.load(path)
+      end
+    end
+
+    def error_from(contents)
+      load_setupfile(contents)
+      nil
+    rescue DevOnboarder::Error => e
+      e.message
+    end
   end
 end

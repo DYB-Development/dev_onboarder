@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "../dev_onboarder"
 require_relative "machine_tools"
 require_relative "requirement"
 require_relative "secrets"
@@ -16,6 +17,12 @@ module DevOnboarder
 
     def self.load(path)
       new(File.dirname(path)).tap { |requirements| requirements.instance_eval(File.read(path), path) }
+    rescue ScriptError, StandardError => e
+      raise Error, "Setupfile line #{line_of(e, path)}: #{e.message.lines.first.chomp}"
+    end
+
+    def self.line_of(error, path)
+      error.backtrace_locations.find { |location| location.path == path }&.lineno
     end
 
     def initialize(dir)
