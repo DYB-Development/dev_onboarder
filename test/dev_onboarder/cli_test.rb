@@ -213,6 +213,12 @@ module DevOnboarder
       assert_equal "PRICE_KEY=abc123\n", File.read(File.join(@dir, ".env"))
     end
 
+    def test_status_succeeds_when_only_an_optional_variable_is_listed
+      declare 'env "PRICE_KEY", from: "the vendor dashboard", optional: true'
+
+      assert_equal 0, run_cli(["status"])
+    end
+
     private
 
     def declare(requirements)

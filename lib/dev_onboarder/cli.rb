@@ -34,7 +34,7 @@ module DevOnboarder
 
     def report_status
       @out.puts status_lines
-      findings_of(nil).empty? ? 0 : 1
+      findings_of(nil).all? { |finding| finding.requirement.optional } ? 0 : 1
     end
 
     def status_lines
