@@ -29,7 +29,7 @@ module DevOnboarder
     end
 
     def line_for(outcome)
-      "met      #{outcome.requirement.key} — #{outcome.requirement.purpose}"
+      "#{outcome.met ? "met    " : "not met"}  #{outcome.requirement.key} — #{outcome.requirement.purpose}"
     end
   end
 end

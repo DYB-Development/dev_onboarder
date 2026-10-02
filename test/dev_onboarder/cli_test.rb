@@ -35,6 +35,13 @@ module DevOnboarder
       assert_includes @out.string, "met      databases — Databases exist"
     end
 
+    def test_a_requirement_that_is_not_met_is_listed_as_not_met
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"'
+      run_cli
+
+      assert_includes @out.string, "not met  databases — Databases exist"
+    end
+
     private
 
     def declare(requirements)
