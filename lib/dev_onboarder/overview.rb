@@ -25,7 +25,11 @@ module DevOnboarder
     end
 
     def notice
-      nil
+      count = findings.count { |finding| finding.requirement.feature.nil? }
+      return if count.zero?
+
+      "dev_onboarder: #{count} requirement#{"s" unless count == 1} need#{"s" if count == 1} setup. " \
+        "Run bundle exec dev_onboarder."
     end
 
     private

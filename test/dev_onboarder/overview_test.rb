@@ -63,6 +63,12 @@ module DevOnboarder
       assert_nil overview.notice
     end
 
+    def test_the_notice_counts_the_requirements_that_need_a_setup_run_and_names_the_command
+      record_met(:databases)
+
+      assert_equal "dev_onboarder: 1 requirement needs setup. Run bundle exec dev_onboarder.", overview.notice
+    end
+
     private
 
     def overview
