@@ -163,6 +163,15 @@ module DevOnboarder
       assert_equal "not ready  payments — Take a test payment\n", @out.string
     end
 
+    def test_a_feature_whose_requirements_are_all_met_is_listed_as_ready
+      declare PAYMENTS
+      run_cli(%w[setup payments], passing: ["check-key"])
+      @out.truncate(@out.rewind)
+      run_cli(["features"])
+
+      assert_equal "ready      payments — Take a test payment\n", @out.string
+    end
+
     private
 
     def declare(requirements)
