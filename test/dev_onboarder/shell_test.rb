@@ -24,5 +24,9 @@ module DevOnboarder
     def test_a_command_that_runs_past_its_time_limit_is_stopped
       refute Shell.new.run("sleep 3", timeout: 0.2).success
     end
+
+    def test_a_command_stopped_at_its_time_limit_says_so_after_what_it_printed
+      assert_equal "started\nStopped after 0.2 seconds.\n", Shell.new.run("echo started; sleep 3", timeout: 0.2).output
+    end
   end
 end

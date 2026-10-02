@@ -17,7 +17,7 @@ module DevOnboarder
         next Run.new(success: process.value.success?, output: printed.value) if process.join(timeout)
 
         Process.kill("TERM", -process.pid)
-        Run.new(success: false, output: printed.value)
+        Run.new(success: false, output: "#{printed.value}Stopped after #{timeout} seconds.\n")
       end
     end
   end
