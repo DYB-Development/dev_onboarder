@@ -143,6 +143,12 @@ module DevOnboarder
       assert_equal "met      payment_key — Payment test key is set\n", @out.string
     end
 
+    def test_setting_up_a_feature_fails_when_its_requirement_is_still_not_met
+      declare PAYMENTS
+
+      assert_equal 1, run_cli(%w[setup payments], passing: ["check-db"])
+    end
+
     private
 
     def declare(requirements)
