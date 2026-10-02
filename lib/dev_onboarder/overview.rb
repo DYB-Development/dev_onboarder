@@ -7,6 +7,7 @@ module DevOnboarder
   class Overview
     Group = Data.define(:name, :rows)
     Row = Data.define(:requirement, :state, :checked_at)
+    FeatureRow = Data.define(:feature, :ready)
 
     def initialize(requirements:, record:)
       @requirements = requirements
@@ -17,6 +18,10 @@ module DevOnboarder
       @requirements.group_by(&:group).map do |name, requirements|
         Group.new(name: name, rows: requirements.map { |requirement| row_for(requirement) })
       end
+    end
+
+    def features
+      @requirements.features.map { |feature| FeatureRow.new(feature: feature, ready: false) }
     end
 
     private

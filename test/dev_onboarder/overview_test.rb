@@ -47,6 +47,10 @@ module DevOnboarder
       assert_equal CHECKED_AT, overview.groups.first.rows.first.checked_at
     end
 
+    def test_a_feature_whose_requirement_is_not_met_is_not_ready
+      refute overview.features.first.ready
+    end
+
     private
 
     def overview
