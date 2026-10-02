@@ -29,6 +29,10 @@ module DevOnboarder
       assert passes?(declare(%(program "ruby", version: "#{RUBY_VERSION}")))
     end
 
+    def test_a_program_older_than_its_minimum_version_is_not_met
+      refute passes?(declare('program "ruby", version: "99.0"'))
+    end
+
     private
 
     def declare(line)
