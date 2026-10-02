@@ -35,5 +35,13 @@ module DevOnboarder
 
       assert_equal({ "PRICE_KEY" => "abc123" }, environment)
     end
+
+    def test_loading_the_file_leaves_a_value_the_environment_already_has
+      EnvFile.new(@path).set("PRICE_KEY", "abc123")
+      environment = { "PRICE_KEY" => "set by the shell" }
+      EnvFile.new(@path).load_into(environment)
+
+      assert_equal "set by the shell", environment.fetch("PRICE_KEY")
+    end
   end
 end

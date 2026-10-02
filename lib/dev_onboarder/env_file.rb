@@ -11,7 +11,7 @@ module DevOnboarder
     end
 
     def load_into(environment)
-      environment.update(values)
+      values.each { |name, value| environment[name] ||= value }
     end
 
     private
