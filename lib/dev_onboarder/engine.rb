@@ -16,5 +16,10 @@ module DevOnboarder
 
   class Engine < ::Rails::Engine
     isolate_namespace DevOnboarder
+
+    def self.startup_notice(root)
+      Overview.new(requirements: Requirements.load(File.join(root, "Setupfile")),
+                   record: Record.new(File.join(root, ".dev_onboarder.json"))).notice
+    end
   end
 end
