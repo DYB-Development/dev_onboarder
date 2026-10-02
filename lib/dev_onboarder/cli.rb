@@ -23,14 +23,21 @@ module DevOnboarder
     end
 
     def call
+      run
+    rescue Error => e
+      @out.puts e.message
+      1
+    end
+
+    private
+
+    def run
       return report_status if @argv.first == "status"
       return report_features if @argv.first == "features"
       return report_unknown_feature if feature && !declared_feature?
 
       run_setup
     end
-
-    private
 
     def report_status
       @out.puts status_lines

@@ -68,6 +68,12 @@ class SmokeTest < Minitest::Test
                  run_command(environment: { "DEV_ONBOARDER_SMOKE_KEY" => "abc123" }).first
   end
 
+  def test_the_command_reports_an_error_in_the_requirements_file_without_a_stack_trace
+    declare "requirment :marker\n"
+
+    assert_match(/\ASetupfile line 1: undefined method .requirment.[^\n]*\n\z/, run_command.first)
+  end
+
   private
 
   def declare(requirements)
