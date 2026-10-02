@@ -72,5 +72,11 @@ module DevOnboarder
 
       assert_select "code", text: "bundle exec dev_onboarder"
     end
+
+    def test_the_page_lists_each_feature_with_what_it_is
+      get "/setup"
+
+      assert_select "td", text: "Take a test payment"
+    end
   end
 end

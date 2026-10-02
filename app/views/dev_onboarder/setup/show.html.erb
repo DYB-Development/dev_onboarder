@@ -41,4 +41,18 @@
       <%= ui_data_table(items: requirement_rows, columns: requirement_columns) %>
     <% end %>
   <% end %>
+
+  <% if @overview.features.any? %>
+    <%
+      feature_rows = @overview.features.map do |entry|
+        {
+          feature: entry.feature.name.to_s,
+          description: entry.feature.description
+        }
+      end
+    %>
+    <%= ui_section(title: "Features") do %>
+      <%= ui_data_table(items: feature_rows, columns: [{ feature: "Feature" }, { description: "Description" }]) %>
+    <% end %>
+  <% end %>
 <% end %>
