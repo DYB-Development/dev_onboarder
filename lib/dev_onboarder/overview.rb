@@ -21,10 +21,14 @@ module DevOnboarder
     end
 
     def features
-      @requirements.features.map { |feature| FeatureRow.new(feature: feature, ready: false) }
+      @requirements.features.map { |feature| FeatureRow.new(feature: feature, ready: ready?(feature)) }
     end
 
     private
+
+    def ready?(feature)
+      findings.none? { |finding| finding.requirement.feature == feature.name }
+    end
 
     def row_for(requirement)
       Row.new(requirement: requirement, state: states.fetch(requirement.key, :met),

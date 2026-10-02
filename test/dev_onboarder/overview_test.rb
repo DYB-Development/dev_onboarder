@@ -51,6 +51,12 @@ module DevOnboarder
       refute overview.features.first.ready
     end
 
+    def test_a_feature_whose_requirements_the_last_run_met_is_ready
+      record_met(:payment_key)
+
+      assert overview.features.first.ready
+    end
+
     private
 
     def overview
