@@ -17,6 +17,11 @@ module DevOnboarder
   class Engine < ::Rails::Engine
     isolate_namespace DevOnboarder
 
+    server do
+      notice = startup_notice(Rails.root.to_s) if Rails.env.local?
+      puts notice if notice
+    end
+
     def self.startup_notice(root)
       return unless File.exist?(File.join(root, "Setupfile"))
 
