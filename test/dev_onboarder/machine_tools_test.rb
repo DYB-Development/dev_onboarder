@@ -33,6 +33,10 @@ module DevOnboarder
       refute passes?(declare('program "ruby", version: "99.0"'))
     end
 
+    def test_a_program_declared_with_how_to_install_it_has_that_as_its_fix
+      assert_equal "brew install libvips", declare('program "vips", install: "brew install libvips"').fix
+    end
+
     private
 
     def declare(line)

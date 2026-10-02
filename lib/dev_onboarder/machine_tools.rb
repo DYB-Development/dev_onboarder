@@ -6,10 +6,10 @@ module DevOnboarder
       exit Gem::Version.new(%%x(%<name>s --version)[/\d+(\.\d+)+/].to_s) >= Gem::Version.new("%<version>s")
     RUBY
 
-    def program(name, version: nil)
+    def program(name, version: nil, install: nil)
       requirement name.tr("-", "_").to_sym, group: :machine_tools,
                                             purpose: "#{[name, version].compact.join(" ")} is installed",
-                                            check: installed_check(name, version)
+                                            check: installed_check(name, version), fix: install
     end
 
     private
