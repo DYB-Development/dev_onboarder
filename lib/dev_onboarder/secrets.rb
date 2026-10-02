@@ -9,7 +9,7 @@ module DevOnboarder
     end
 
     def key_file(path, from:)
-      requirement path.gsub(/\W/, "_").to_sym, group: :secrets, purpose: "#{path} exists", check: "true",
+      requirement path.gsub(/\W/, "_").to_sym, group: :secrets, purpose: "#{path} exists", check: %(test -f "#{path}"),
                                                instruction: "Ask #{from} for #{path}."
     end
   end

@@ -37,6 +37,10 @@ module DevOnboarder
       assert passes?(declare('key_file "master.key", from: "the team lead"'))
     end
 
+    def test_a_declared_key_file_that_is_missing_is_not_met
+      refute passes?(declare('key_file "master.key", from: "the team lead"'))
+    end
+
     private
 
     def write(name, contents)
