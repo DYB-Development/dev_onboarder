@@ -21,6 +21,11 @@
     <%= ui_alert(message: "Everything outside a feature is set up.", type: :success) %>
   <% end %>
 
+  <%= ui_section do %>
+    <%= ui_code(caption: "Run this command to set up what is missing") do %>bundle exec dev_onboarder<% end %>
+    <%= ui_copy_button(text: "bundle exec dev_onboarder") %>
+  <% end %>
+
   <% @overview.groups.each do |group| %>
     <%
       requirement_rows = group.rows.map do |row|

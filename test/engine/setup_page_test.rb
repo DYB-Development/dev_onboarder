@@ -66,5 +66,11 @@ module DevOnboarder
 
       assert_includes response.body, "Everything outside a feature is set up."
     end
+
+    def test_the_page_shows_the_command_that_sets_up_what_is_missing
+      get "/setup"
+
+      assert_select "code", text: "bundle exec dev_onboarder"
+    end
   end
 end
