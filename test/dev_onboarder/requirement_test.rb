@@ -41,6 +41,10 @@ module DevOnboarder
       assert_nil Requirement.new(key: :databases, group: :repo_setup, purpose: "Databases", check: "true").variable
     end
 
+    def test_a_requirement_is_not_optional_unless_it_is_declared_optional
+      refute Requirement.new(key: :databases, group: :repo_setup, purpose: "Databases", check: "true").optional
+    end
+
     private
 
     def fingerprint_of(**attributes)
