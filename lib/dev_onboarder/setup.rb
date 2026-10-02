@@ -7,8 +7,8 @@ module DevOnboarder
   Outcome = Data.define(:requirement, :met, :last_checked_at)
 
   class Setup
-    def initialize(requirements:, record:, shell:, clock:)
-      @requirements = requirements
+    def initialize(requirements:, record:, shell:, clock:, feature: nil)
+      @requirements = feature ? requirements.select { |requirement| requirement.feature == feature } : requirements
       @record = record
       @shell = shell
       @clock = clock

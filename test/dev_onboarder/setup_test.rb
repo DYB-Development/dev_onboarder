@@ -80,14 +80,26 @@ module DevOnboarder
       assert_equal declared.fingerprint, @record.result_for(:databases).fingerprint
     end
 
+    def test_a_run_that_names_a_feature_checks_only_that_features_requirements
+      shell = ScriptedShell.new
+      run_setup([requirement(check: "check-db"), payment_key], shell, feature: :payments)
+
+      assert_equal ["check-key"], shell.commands
+    end
+
     private
 
     def requirement(**attributes)
       Requirement.new(key: :databases, group: :repo_setup, purpose: "Databases exist", **attributes)
     end
 
-    def run_setup(requirements, shell)
-      Setup.new(requirements: requirements, record: @record, shell: shell, clock: -> { NOW }).call
+    def payment_key(**attributes)
+      Requirement.new(key: :payment_key, group: :secrets, purpose: "Payment test key is set", feature: :payments,
+                      check: "check-key", **attributes)
+    end
+
+    def run_setup(requirements, shell, feature: nil)
+      Setup.new(requirements: requirements, record: @record, shell: shell, clock: -> { NOW }, feature: feature).call
     end
   end
 end
