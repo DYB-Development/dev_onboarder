@@ -69,6 +69,12 @@ module DevOnboarder
       assert_empty @out.string
     end
 
+    def test_a_value_is_not_stored_in_an_environment_file_git_does_not_ignore
+      collect(Keyboard.new("abc123\n"), ignored: false)
+
+      refute_path_exists @path
+    end
+
     private
 
     def collect(keyboard, ignored: true)

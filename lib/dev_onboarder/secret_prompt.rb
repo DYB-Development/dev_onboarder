@@ -14,6 +14,7 @@ module DevOnboarder
 
     def collect(requirement)
       return unless @input.tty?
+      return unless ignored_by_git?
 
       @out.puts "#{requirement.variable} — #{requirement.instruction}"
       @out.print "Value (what you type is not shown): "
@@ -23,6 +24,10 @@ module DevOnboarder
     end
 
     private
+
+    def ignored_by_git?
+      @shell.succeeds?("git check-ignore --quiet .env")
+    end
 
     def typed_value
       @input.noecho(&:gets).to_s.chomp
