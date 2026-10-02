@@ -88,6 +88,13 @@ module DevOnboarder
       assert_empty @shell.commands
     end
 
+    def test_status_lists_a_requirement_added_since_the_last_run_as_new_with_what_it_is_for
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"'
+      run_cli(["status"])
+
+      assert_includes @out.string, "new      databases — Databases exist"
+    end
+
     private
 
     def declare(requirements)

@@ -25,7 +25,8 @@ module DevOnboarder
     private
 
     def report_status
-      Status.new(requirements: requirements, record: record).call
+      findings = Status.new(requirements: requirements, record: record).call
+      findings.each { |finding| @out.puts "new      #{finding.requirement.key} — #{finding.requirement.purpose}" }
       0
     end
 
