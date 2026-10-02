@@ -2,6 +2,7 @@
 
 require_relative "machine_tools"
 require_relative "requirement"
+require_relative "secrets"
 
 module DevOnboarder
   Feature = Data.define(:name, :description)
@@ -9,6 +10,7 @@ module DevOnboarder
   class Requirements
     include Enumerable
     include MachineTools
+    include Secrets
 
     attr_reader :features
 
