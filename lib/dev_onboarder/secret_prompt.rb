@@ -15,8 +15,9 @@ module DevOnboarder
     def collect(requirement)
       @out.puts "#{requirement.variable} — #{requirement.instruction}"
       @out.print "Value (what you type is not shown): "
-      @env_file.set(requirement.variable, typed_value)
+      value = typed_value
       @out.puts
+      @env_file.set(requirement.variable, value) unless value.empty?
     end
 
     private

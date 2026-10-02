@@ -57,6 +57,12 @@ module DevOnboarder
       assert_includes @out.string, "PRICE_KEY — Get it from the vendor dashboard."
     end
 
+    def test_a_developer_who_types_nothing_has_no_value_stored
+      collect(Keyboard.new("\n"))
+
+      refute_path_exists @path
+    end
+
     private
 
     def collect(keyboard, ignored: true)
