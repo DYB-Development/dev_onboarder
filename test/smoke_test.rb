@@ -51,6 +51,16 @@ class SmokeTest < Minitest::Test
     assert_equal "new      marker — The marker file exists\n", run_command("status").first
   end
 
+  def test_the_features_command_lists_a_feature_no_run_has_set_up_as_not_ready
+    declare <<~RUBY
+      feature :payments, "Take a test payment" do
+        requirement :payment_key, group: :secrets, purpose: "Payment test key is set", check: "false"
+      end
+    RUBY
+
+    assert_equal "not ready  payments — Take a test payment\n", run_command("features").first
+  end
+
   private
 
   def declare(requirements)
