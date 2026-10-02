@@ -45,6 +45,10 @@ module DevOnboarder
       refute Requirement.new(key: :databases, group: :repo_setup, purpose: "Databases", check: "true").optional
     end
 
+    def test_a_requirement_has_no_time_limit_unless_it_is_given_one
+      assert_nil Requirement.new(key: :databases, group: :repo_setup, purpose: "Databases", check: "true").timeout
+    end
+
     private
 
     def fingerprint_of(**attributes)

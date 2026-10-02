@@ -5,9 +5,9 @@ require "json"
 
 module DevOnboarder
   Requirement = Data.define(:key, :group, :purpose, :check, :fix, :instruction, :feature, :variable,
-                            :optional) do
+                            :optional, :timeout) do
     def initialize(key:, group:, purpose:, check:, fix: nil, instruction: nil, feature: nil, variable: nil,
-                   optional: false)
+                   optional: false, timeout: nil)
       super
     end
 
