@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## [0.6.0]
+
+- A Rails app with keystone_ui can mount `DevOnboarder::Engine` to show the setup page.
+- An app's server prints one line when it starts locally and a requirement needs setup.
+
 ## [0.5.0]
 
 - `env` and `key_file` declare secrets and keys requirements in one line each.
