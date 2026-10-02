@@ -28,6 +28,11 @@ module DevOnboarder
                    fingerprint_of(check: "true", fix: "bin/rails db:prepare")
     end
 
+    def test_a_requirement_whose_instruction_changes_has_a_different_fingerprint
+      refute_equal fingerprint_of(check: "true", instruction: "Ask the team lead"),
+                   fingerprint_of(check: "true", instruction: "Ask the vendor")
+    end
+
     private
 
     def fingerprint_of(**attributes)

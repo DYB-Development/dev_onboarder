@@ -14,7 +14,7 @@ module DevOnboarder
     end
 
     def fingerprint
-      Digest::SHA256.hexdigest([check, fix].to_json)
+      Digest::SHA256.hexdigest([check, fix, instruction].to_json)
     end
   end
 end
