@@ -21,6 +21,7 @@ module DevOnboarder
 
     def call
       return report_status if @argv.first == "status"
+      return report_features if @argv.first == "features"
       return report_unknown_feature if feature && !declared_feature?
 
       run_setup
@@ -42,6 +43,11 @@ module DevOnboarder
 
     def finding_line(finding)
       "#{STATE_LABELS.fetch(finding.state)}  #{finding.requirement.key} — #{finding.requirement.purpose}"
+    end
+
+    def report_features
+      @out.puts(requirements.features.map { |declared| "not ready  #{declared.name} — #{declared.description}" })
+      0
     end
 
     def report_unknown_feature

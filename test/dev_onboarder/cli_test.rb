@@ -156,6 +156,13 @@ module DevOnboarder
       assert_equal "No feature named paymnets.\n", @out.string
     end
 
+    def test_a_feature_whose_requirement_is_not_met_is_listed_as_not_ready
+      declare PAYMENTS
+      run_cli(["features"])
+
+      assert_equal "not ready  payments — Take a test payment\n", @out.string
+    end
+
     private
 
     def declare(requirements)
