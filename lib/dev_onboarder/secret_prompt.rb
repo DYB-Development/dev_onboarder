@@ -14,7 +14,7 @@ module DevOnboarder
 
     def collect(requirement)
       return unless @input.tty?
-      return unless ignored_by_git?
+      return @out.puts(not_ignored(requirement)) unless ignored_by_git?
 
       @out.puts "#{requirement.variable} — #{requirement.instruction}"
       @out.print "Value (what you type is not shown): "
@@ -24,6 +24,10 @@ module DevOnboarder
     end
 
     private
+
+    def not_ignored(requirement)
+      "#{requirement.variable} — add .env to .gitignore, then run setup again to enter its value."
+    end
 
     def ignored_by_git?
       @shell.succeeds?("git check-ignore --quiet .env")

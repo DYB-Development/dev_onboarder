@@ -75,6 +75,12 @@ module DevOnboarder
       refute_path_exists @path
     end
 
+    def test_a_developer_is_told_to_have_git_ignore_the_environment_file_first
+      collect(Keyboard.new("abc123\n"), ignored: false)
+
+      assert_equal "PRICE_KEY — add .env to .gitignore, then run setup again to enter its value.\n", @out.string
+    end
+
     private
 
     def collect(keyboard, ignored: true)
