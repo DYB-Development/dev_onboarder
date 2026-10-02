@@ -15,10 +15,17 @@ module DevOnboarder
     end
 
     def call
-      @requirements.map { |requirement| outcome_for(requirement) }
+      outcomes = @requirements.map { |requirement| outcome_for(requirement) }
+      @record.save(results_of(outcomes))
+      outcomes
     end
 
     private
+
+    def results_of(outcomes)
+      checked_at = @clock.call
+      outcomes.to_h { |outcome| [outcome.requirement.key, Result.new(met: outcome.met, checked_at: checked_at)] }
+    end
 
     def outcome_for(requirement)
       Outcome.new(requirement: requirement, met: met?(requirement))

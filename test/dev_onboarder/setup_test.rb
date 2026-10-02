@@ -59,6 +59,12 @@ module DevOnboarder
       assert outcomes.first.met
     end
 
+    def test_a_run_records_each_requirement_with_the_time_it_was_checked
+      run_setup([requirement(check: "check-db")], ScriptedShell.new(passing: ["check-db"]))
+
+      assert_equal Result.new(met: true, checked_at: NOW), @record.result_for(:databases)
+    end
+
     private
 
     def requirement(**attributes)
