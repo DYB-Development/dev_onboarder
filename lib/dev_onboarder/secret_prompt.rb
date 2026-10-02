@@ -13,7 +13,10 @@ module DevOnboarder
     end
 
     def collect(requirement)
+      @out.puts "#{requirement.variable} — #{requirement.instruction}"
+      @out.print "Value (what you type is not shown): "
       @env_file.set(requirement.variable, typed_value)
+      @out.puts
     end
 
     private

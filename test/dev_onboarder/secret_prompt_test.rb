@@ -51,6 +51,12 @@ module DevOnboarder
       assert_equal "PRICE_KEY=abc123\n", File.read(@path)
     end
 
+    def test_a_developer_is_shown_where_to_get_the_value_they_are_asked_for
+      collect(Keyboard.new("abc123\n"))
+
+      assert_includes @out.string, "PRICE_KEY — Get it from the vendor dashboard."
+    end
+
     private
 
     def collect(keyboard, ignored: true)
