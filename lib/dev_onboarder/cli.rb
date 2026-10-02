@@ -70,10 +70,15 @@ module DevOnboarder
     end
 
     def run_setup
-      outcomes = Setup.new(requirements: requirements, record: record, shell: @shell, clock: @clock,
-                           feature: feature, secrets: secret_prompt).call
+      @out.puts "The setup record could not be read, so this run writes it again." if record.unreadable?
+      outcomes = setup.call
       outcomes.each { |outcome| @out.puts Lines.for_outcome(outcome) }
       outcomes.select { |outcome| required?(outcome.requirement) }.all?(&:met) ? 0 : 1
+    end
+
+    def setup
+      Setup.new(requirements: requirements, record: record, shell: @shell, clock: @clock, feature: feature,
+                secrets: secret_prompt)
     end
 
     def required?(requirement)

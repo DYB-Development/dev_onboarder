@@ -233,6 +233,14 @@ module DevOnboarder
                    @out.string
     end
 
+    def test_a_run_says_when_the_setup_record_could_not_be_read
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"'
+      File.write(File.join(@dir, ".dev_onboarder.json"), "{ this is not a setup record")
+      run_cli(passing: ["check-db"])
+
+      assert_equal "The setup record could not be read, so this run writes it again.\n", @out.string.lines.first
+    end
+
     private
 
     def declare(requirements)
