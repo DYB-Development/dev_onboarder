@@ -18,13 +18,14 @@ module DevOnboarder
     end
 
     def call
+      outcomes = run_setup
       outcomes.each { |outcome| @out.puts lines_for(outcome) }
-      1
+      outcomes.all?(&:met) ? 0 : 1
     end
 
     private
 
-    def outcomes
+    def run_setup
       Setup.new(requirements: Requirements.load(File.join(@dir, REQUIREMENTS_FILE)),
                 record: Record.new(File.join(@dir, RECORD_FILE)), shell: @shell, clock: @clock).call
     end

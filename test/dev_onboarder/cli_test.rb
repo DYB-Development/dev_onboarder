@@ -63,6 +63,12 @@ module DevOnboarder
       assert_equal 1, run_cli
     end
 
+    def test_the_command_succeeds_when_every_requirement_is_met
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"'
+
+      assert_equal 0, run_cli(passing: ["check-db"])
+    end
+
     private
 
     def declare(requirements)
