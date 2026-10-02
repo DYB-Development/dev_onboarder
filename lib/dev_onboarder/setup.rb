@@ -21,7 +21,13 @@ module DevOnboarder
     private
 
     def outcome_for(requirement)
-      Outcome.new(requirement: requirement, met: @shell.succeeds?(requirement.check))
+      Outcome.new(requirement: requirement, met: met?(requirement))
+    end
+
+    def met?(requirement)
+      met = @shell.succeeds?(requirement.check)
+      @shell.succeeds?(requirement.fix) if !met && requirement.fixable?
+      met
     end
   end
 end

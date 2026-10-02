@@ -45,6 +45,13 @@ module DevOnboarder
       refute outcomes.first.met
     end
 
+    def test_a_requirement_that_is_not_met_has_its_fix_run
+      shell = ScriptedShell.new
+      run_setup([requirement(check: "check-db", fix: "fix-db")], shell)
+
+      assert_includes shell.commands, "fix-db"
+    end
+
     private
 
     def requirement(**attributes)
