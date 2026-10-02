@@ -38,13 +38,18 @@ module DevOnboarder
     end
 
     def run_setup
-      outcomes = Setup.new(requirements: requirements, record: record, shell: @shell, clock: @clock).call
+      outcomes = Setup.new(requirements: requirements, record: record, shell: @shell, clock: @clock,
+                           feature: feature).call
       outcomes.each { |outcome| @out.puts lines_for(outcome) }
       outcomes.reject { |outcome| outcome.requirement.feature }.all?(&:met) ? 0 : 1
     end
 
     def finding_line(finding)
       "#{STATE_LABELS.fetch(finding.state)}  #{finding.requirement.key} — #{finding.requirement.purpose}"
+    end
+
+    def feature
+      @argv[1]&.to_sym
     end
 
     def requirements

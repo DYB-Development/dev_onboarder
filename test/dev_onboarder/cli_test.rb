@@ -136,6 +136,13 @@ module DevOnboarder
       assert_equal 0, run_cli(passing: ["check-db"])
     end
 
+    def test_setting_up_a_feature_lists_only_that_features_requirements
+      declare PAYMENTS
+      run_cli(%w[setup payments], passing: %w[check-db check-key])
+
+      assert_equal "met      payment_key — Payment test key is set\n", @out.string
+    end
+
     private
 
     def declare(requirements)
