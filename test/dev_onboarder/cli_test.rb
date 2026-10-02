@@ -10,11 +10,15 @@ module DevOnboarder
     NOW = Time.utc(2026, 10, 2, 14, 30)
 
     class ScriptedShell
+      attr_reader :commands
+
       def initialize(passing)
         @passing = passing
+        @commands = []
       end
 
       def succeeds?(command)
+        @commands << command
         @passing.include?(command)
       end
     end
@@ -77,14 +81,57 @@ module DevOnboarder
       assert_includes @out.string, "databases — Databases exist (last checked 2026-10-02 14:30 UTC)"
     end
 
+    def test_status_runs_no_check_and_no_fix
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"'
+      run_cli(["status"])
+
+      assert_empty @shell.commands
+    end
+
+    def test_status_lists_a_requirement_added_since_the_last_run_as_new_with_what_it_is_for
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"'
+      run_cli(["status"])
+
+      assert_includes @out.string, "new      databases — Databases exist"
+    end
+
+    def test_status_lists_a_requirement_whose_definition_changed_as_changed
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"'
+      run_cli(passing: ["check-db"])
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-all-dbs"'
+      run_cli(["status"])
+
+      assert_includes @out.string, "changed  databases — Databases exist"
+    end
+
+    def test_status_fails_when_a_requirement_is_listed
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"'
+
+      assert_equal 1, run_cli(["status"])
+    end
+
+    def test_status_says_nothing_has_changed_once_a_removed_requirement_is_the_only_difference
+      declare <<~RUBY
+        requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"
+        requirement :old_tool, group: :machine_tools, purpose: "The old tool is installed", check: "check-tool"
+      RUBY
+      run_cli(passing: %w[check-db check-tool])
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"'
+      @out.truncate(@out.rewind)
+      run_cli(["status"])
+
+      assert_equal "Nothing has changed since your last setup.\n", @out.string
+    end
+
     private
 
     def declare(requirements)
       File.write(File.join(@dir, "Setupfile"), requirements)
     end
 
-    def run_cli(passing: [])
-      CLI.new([], out: @out, dir: @dir, shell: ScriptedShell.new(passing), clock: -> { NOW }).call
+    def run_cli(argv = [], passing: [])
+      @shell = ScriptedShell.new(passing)
+      CLI.new(argv, out: @out, dir: @dir, shell: @shell, clock: -> { NOW }).call
     end
   end
 end

@@ -3,11 +3,13 @@
 require_relative "requirements"
 require_relative "setup"
 require_relative "shell"
+require_relative "status"
 
 module DevOnboarder
   class CLI
     REQUIREMENTS_FILE = "Setupfile"
     RECORD_FILE = ".dev_onboarder.json"
+    STATE_LABELS = { new: "new    ", changed: "changed", not_met: "not met" }.freeze
 
     def initialize(argv, out: $stdout, dir: Dir.pwd, shell: Shell.new, clock: -> { Time.now })
       @argv = argv
@@ -18,16 +20,39 @@ module DevOnboarder
     end
 
     def call
-      outcomes = run_setup
-      outcomes.each { |outcome| @out.puts lines_for(outcome) }
-      outcomes.all?(&:met) ? 0 : 1
+      @argv.first == "status" ? report_status : run_setup
     end
 
     private
 
+    def report_status
+      findings = Status.new(requirements: requirements, record: record).call
+      @out.puts status_lines(findings)
+      findings.empty? ? 0 : 1
+    end
+
+    def status_lines(findings)
+      return "Nothing has changed since your last setup." if findings.empty?
+
+      findings.map { |finding| finding_line(finding) }
+    end
+
     def run_setup
-      Setup.new(requirements: Requirements.load(File.join(@dir, REQUIREMENTS_FILE)),
-                record: Record.new(File.join(@dir, RECORD_FILE)), shell: @shell, clock: @clock).call
+      outcomes = Setup.new(requirements: requirements, record: record, shell: @shell, clock: @clock).call
+      outcomes.each { |outcome| @out.puts lines_for(outcome) }
+      outcomes.all?(&:met) ? 0 : 1
+    end
+
+    def finding_line(finding)
+      "#{STATE_LABELS.fetch(finding.state)}  #{finding.requirement.key} — #{finding.requirement.purpose}"
+    end
+
+    def requirements
+      Requirements.load(File.join(@dir, REQUIREMENTS_FILE))
+    end
+
+    def record
+      Record.new(File.join(@dir, RECORD_FILE))
     end
 
     def lines_for(outcome)

@@ -18,5 +18,25 @@ module DevOnboarder
 
       refute_predicate requirement, :fixable?
     end
+
+    def test_a_requirement_whose_check_changes_has_a_different_fingerprint
+      refute_equal fingerprint_of(check: "bin/rails db:version"), fingerprint_of(check: "bin/rails db:migrate:status")
+    end
+
+    def test_a_requirement_whose_fix_changes_has_a_different_fingerprint
+      refute_equal fingerprint_of(check: "true", fix: "bin/setup"),
+                   fingerprint_of(check: "true", fix: "bin/rails db:prepare")
+    end
+
+    def test_a_requirement_whose_instruction_changes_has_a_different_fingerprint
+      refute_equal fingerprint_of(check: "true", instruction: "Ask the team lead"),
+                   fingerprint_of(check: "true", instruction: "Ask the vendor")
+    end
+
+    private
+
+    def fingerprint_of(**attributes)
+      Requirement.new(key: :databases, group: :repo_setup, purpose: "Databases exist", **attributes).fingerprint
+    end
   end
 end
