@@ -87,6 +87,13 @@ module DevOnboarder
       assert_equal ["check-key"], shell.commands
     end
 
+    def test_a_run_that_names_no_feature_does_not_run_a_features_fix
+      shell = ScriptedShell.new
+      run_setup([payment_key(fix: "fix-key")], shell)
+
+      refute_includes shell.commands, "fix-key"
+    end
+
     private
 
     def requirement(**attributes)
