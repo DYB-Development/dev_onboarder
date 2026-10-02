@@ -16,11 +16,17 @@ module DevOnboarder
     end
 
     def result_for(key)
-      stored = JSON.parse(File.read(@path)).fetch("results")[key.to_s]
-      Result.new(met: stored.fetch("met"), checked_at: Time.iso8601(stored.fetch("checked_at")))
+      stored = stored_results[key.to_s]
+      stored && Result.new(met: stored.fetch("met"), checked_at: Time.iso8601(stored.fetch("checked_at")))
     end
 
     private
+
+    def stored_results
+      return {} unless File.exist?(@path)
+
+      JSON.parse(File.read(@path)).fetch("results")
+    end
 
     def stored(result)
       { "met" => result.met, "checked_at" => result.checked_at.utc.iso8601 }

@@ -28,5 +28,9 @@ module DevOnboarder
 
       assert_equal CHECKED_AT, Record.new(@path).result_for(:databases).checked_at
     end
+
+    def test_a_clone_with_no_setup_record_has_no_result_for_a_requirement
+      assert_nil Record.new(@path).result_for(:databases)
+    end
   end
 end
