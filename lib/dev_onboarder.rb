@@ -6,4 +6,4 @@ module DevOnboarder
   class Error < StandardError; end
 end
 
-require_relative "dev_onboarder/engine" if defined?(Rails::Engine)
+require_relative "dev_onboarder/engine" if defined?(Rails::Engine) && Gem.loaded_specs.key?("keystone_ui")

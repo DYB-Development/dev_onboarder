@@ -13,5 +13,12 @@ module DevOnboarder
 
       assert_equal "constant", output
     end
+
+    def test_requiring_the_gem_inside_a_rails_app_without_keystone_ui_leaves_the_page_out
+      script = 'require "rails"; require "dev_onboarder"; print defined?(DevOnboarder::Engine).inspect'
+      output, = Bundler.with_unbundled_env { Open3.capture2e("ruby", "-I", LIB, "-e", script) }
+
+      assert_equal "nil", output
+    end
   end
 end
