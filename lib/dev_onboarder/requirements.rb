@@ -13,10 +13,11 @@ module DevOnboarder
     attr_reader :features
 
     def self.load(path)
-      new.tap { |requirements| requirements.instance_eval(File.read(path), path) }
+      new(File.dirname(path)).tap { |requirements| requirements.instance_eval(File.read(path), path) }
     end
 
-    def initialize
+    def initialize(dir)
+      @dir = dir
       @declared = []
       @features = []
     end

@@ -47,6 +47,12 @@ module DevOnboarder
       assert passes?(declare("ruby_version"))
     end
 
+    def test_the_ruby_version_requirement_is_not_met_when_the_repo_names_another_ruby
+      write ".ruby-version", "0.0.1\n"
+
+      refute passes?(declare("ruby_version"))
+    end
+
     private
 
     def write(name, contents)
