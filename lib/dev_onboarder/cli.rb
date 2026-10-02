@@ -9,6 +9,7 @@ module DevOnboarder
   class CLI
     REQUIREMENTS_FILE = "Setupfile"
     RECORD_FILE = ".dev_onboarder.json"
+    STATE_LABELS = { new: "new    ", changed: "changed", not_met: "not met" }.freeze
 
     def initialize(argv, out: $stdout, dir: Dir.pwd, shell: Shell.new, clock: -> { Time.now })
       @argv = argv
@@ -26,7 +27,7 @@ module DevOnboarder
 
     def report_status
       findings = Status.new(requirements: requirements, record: record).call
-      findings.each { |finding| @out.puts "new      #{finding.requirement.key} — #{finding.requirement.purpose}" }
+      findings.each { |finding| @out.puts finding_line(finding) }
       0
     end
 
@@ -34,6 +35,10 @@ module DevOnboarder
       outcomes = Setup.new(requirements: requirements, record: record, shell: @shell, clock: @clock).call
       outcomes.each { |outcome| @out.puts lines_for(outcome) }
       outcomes.all?(&:met) ? 0 : 1
+    end
+
+    def finding_line(finding)
+      "#{STATE_LABELS.fetch(finding.state)}  #{finding.requirement.key} — #{finding.requirement.purpose}"
     end
 
     def requirements
