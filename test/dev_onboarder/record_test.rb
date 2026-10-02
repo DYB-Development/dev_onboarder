@@ -32,5 +32,11 @@ module DevOnboarder
     def test_a_clone_with_no_setup_record_has_no_result_for_a_requirement
       assert_nil Record.new(@path).result_for(:databases)
     end
+
+    def test_a_saved_result_is_read_back_with_its_fingerprint
+      Record.new(@path).save(databases: Result.new(met: true, checked_at: CHECKED_AT, fingerprint: "abc123"))
+
+      assert_equal "abc123", Record.new(@path).result_for(:databases).fingerprint
+    end
   end
 end

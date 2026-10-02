@@ -4,7 +4,11 @@ require "json"
 require "time"
 
 module DevOnboarder
-  Result = Data.define(:met, :checked_at)
+  Result = Data.define(:met, :checked_at, :fingerprint) do
+    def initialize(met:, checked_at:, fingerprint: nil)
+      super
+    end
+  end
 
   class Record
     def initialize(path)
@@ -17,7 +21,8 @@ module DevOnboarder
 
     def result_for(key)
       stored = stored_results[key.to_s]
-      stored && Result.new(met: stored.fetch("met"), checked_at: Time.iso8601(stored.fetch("checked_at")))
+      stored && Result.new(met: stored.fetch("met"), checked_at: Time.iso8601(stored.fetch("checked_at")),
+                           fingerprint: stored["fingerprint"])
     end
 
     private
@@ -29,7 +34,7 @@ module DevOnboarder
     end
 
     def stored(result)
-      { "met" => result.met, "checked_at" => result.checked_at.utc.iso8601 }
+      { "met" => result.met, "checked_at" => result.checked_at.utc.iso8601, "fingerprint" => result.fingerprint }
     end
   end
 end
