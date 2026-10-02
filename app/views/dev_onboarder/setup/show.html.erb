@@ -15,6 +15,8 @@
 %>
 
 <%= ui_page do %>
+  <%= ui_page_header(title: "Setup", subtitle: "What this repo needs on your machine") %>
+
   <% if @overview.notice.present? %>
     <%= ui_alert(message: @overview.notice, type: :warning) %>
   <% else %>

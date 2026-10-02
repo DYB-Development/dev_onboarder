@@ -91,5 +91,11 @@ module DevOnboarder
 
       assert_select "td", text: "Ready"
     end
+
+    def test_the_page_is_titled_setup
+      get "/setup"
+
+      assert_select "h1", text: "Setup"
+    end
   end
 end
