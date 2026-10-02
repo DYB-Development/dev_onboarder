@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "machine_tools"
 require_relative "requirement"
 
 module DevOnboarder
@@ -7,6 +8,7 @@ module DevOnboarder
 
   class Requirements
     include Enumerable
+    include MachineTools
 
     attr_reader :features
 
