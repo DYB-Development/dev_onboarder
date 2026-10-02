@@ -58,6 +58,16 @@ module DevOnboarder
       assert_match(/\ASetupfile line 1: /, error_from("requirement :databases, group: (\n"))
     end
 
+    def test_two_requirements_with_the_same_key_are_refused_with_the_line_of_each
+      contents = <<~RUBY
+        requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "true"
+        requirement :seeds, group: :repo_setup, purpose: "Seed data is loaded", check: "true"
+        requirement :databases, group: :repo_setup, purpose: "Databases are migrated", check: "true"
+      RUBY
+
+      assert_equal "Setupfile line 3: databases is already declared on line 1", error_from(contents)
+    end
+
     private
 
     def load_setupfile(contents)

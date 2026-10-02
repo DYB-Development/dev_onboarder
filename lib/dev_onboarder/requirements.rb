@@ -16,7 +16,7 @@ module DevOnboarder
     attr_reader :features
 
     def self.load(path)
-      new(File.dirname(path)).tap { |requirements| requirements.instance_eval(File.read(path), path) }
+      new(path).tap { |requirements| requirements.instance_eval(File.read(path), path) }
     rescue ScriptError, StandardError => e
       raise Error, "Setupfile line #{line_of(e, path)}: #{reason_of(e, path)}"
     end
@@ -30,13 +30,19 @@ module DevOnboarder
       error.message.lines.first.chomp.sub(/\A#{Regexp.escape(path)}:\d+: /, "")
     end
 
-    def initialize(dir)
-      @dir = dir
+    def initialize(path)
+      @path = path
+      @dir = File.dirname(path)
+      @lines = {}
       @declared = []
       @features = []
     end
 
     def requirement(key, **attributes)
+      line = caller_locations.find { |location| location.path == @path }&.lineno
+      raise Error, "#{key} is already declared on line #{@lines[key]}" if @lines.key?(key)
+
+      @lines[key] = line
       @declared << Requirement.new(key: key, feature: @current_feature, **attributes)
     end
 
