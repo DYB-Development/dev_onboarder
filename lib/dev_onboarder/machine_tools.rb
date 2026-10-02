@@ -2,6 +2,7 @@
 
 module DevOnboarder
   module MachineTools
+    HOMEBREW_ON_PATH = "command -v brew >/dev/null"
     VERSION_CHECK = <<~'RUBY'.strip
       exit Gem::Version.new(%%x(%<name>s --version)[/\d+(\.\d+)+/].to_s) >= Gem::Version.new("%<version>s")
     RUBY
@@ -17,6 +18,11 @@ module DevOnboarder
       requirement :ruby_version, group: :machine_tools, purpose: "Ruby #{named} is the running Ruby",
                                  check: %(test "$(ruby -e 'print RUBY_VERSION')" = "#{named}"),
                                  instruction: "This repo names Ruby #{named} and you are running Ruby #{RUBY_VERSION}."
+    end
+
+    def brewfile
+      requirement :brewfile, group: :machine_tools, purpose: "Every package in the Brewfile is installed",
+                             check: "#{HOMEBREW_ON_PATH} && brew bundle check --file=Brewfile --no-upgrade"
     end
 
     private

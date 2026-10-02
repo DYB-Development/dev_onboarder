@@ -60,6 +60,18 @@ module DevOnboarder
                    declare("ruby_version").instruction
     end
 
+    BREWFILE = <<~RUBY
+      brew "postgresql@17"
+      brew "vips"
+    RUBY
+
+    def test_the_package_list_requirement_asks_homebrew_whether_every_package_is_installed
+      write "Brewfile", BREWFILE
+
+      assert_equal "command -v brew >/dev/null && brew bundle check --file=Brewfile --no-upgrade",
+                   declare("brewfile").check
+    end
+
     private
 
     def write(name, contents)
