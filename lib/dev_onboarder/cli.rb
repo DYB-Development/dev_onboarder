@@ -33,7 +33,9 @@ module DevOnboarder
     end
 
     def instruction_for(outcome)
-      "         #{outcome.requirement.instruction}" unless outcome.met
+      return if outcome.met || outcome.requirement.instruction.nil?
+
+      "         #{outcome.requirement.instruction}"
     end
 
     def line_for(outcome)

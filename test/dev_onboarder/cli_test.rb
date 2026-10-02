@@ -50,6 +50,13 @@ module DevOnboarder
       assert_includes @out.string, "         Ask the team lead for the price key"
     end
 
+    def test_a_requirement_with_no_instruction_takes_one_line
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"'
+      run_cli
+
+      assert_equal 1, @out.string.lines.size
+    end
+
     private
 
     def declare(requirements)
