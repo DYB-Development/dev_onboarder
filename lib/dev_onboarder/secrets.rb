@@ -7,5 +7,10 @@ module DevOnboarder
                                         check: %(test -n "${#{name}:-}" || grep -q "^#{name}=." .env 2>/dev/null),
                                         instruction: "Get it from #{from}.", variable: name, optional: optional
     end
+
+    def key_file(path, from:)
+      requirement path.gsub(/\W/, "_").to_sym, group: :secrets, purpose: "#{path} exists", check: "true",
+                                               instruction: "Ask #{from} for #{path}."
+    end
   end
 end

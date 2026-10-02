@@ -31,6 +31,12 @@ module DevOnboarder
       assert declare(%(env "#{VARIABLE}", from: "the vendor dashboard", optional: true)).optional
     end
 
+    def test_a_declared_key_file_that_exists_is_met
+      write "master.key", "abc123"
+
+      assert passes?(declare('key_file "master.key", from: "the team lead"'))
+    end
+
     private
 
     def write(name, contents)
