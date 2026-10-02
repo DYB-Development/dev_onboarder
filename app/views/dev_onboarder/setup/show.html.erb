@@ -9,7 +9,8 @@
   requirement_columns = [
     Keystone::Ui::Column.new(:requirement, "Requirement"),
     Keystone::Ui::Column.new(:purpose, "Purpose"),
-    Keystone::Ui::Column.new(:state, "State")
+    Keystone::Ui::Column.new(:state, "State"),
+    Keystone::Ui::Column.new(:last_checked, "Last checked", mobile_hidden: true)
   ]
 %>
 
@@ -20,7 +21,8 @@
         {
           requirement: row.requirement.key.to_s,
           purpose: row.requirement.purpose,
-          state: ui_badge(**state_badges.fetch(row.state))
+          state: ui_badge(**state_badges.fetch(row.state)),
+          last_checked: row.checked_at ? row.checked_at.utc.strftime("%Y-%m-%d %H:%M UTC") : "Never"
         }
       end
     %>

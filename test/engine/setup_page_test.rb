@@ -38,5 +38,11 @@ module DevOnboarder
 
       assert_select "td", text: "New"
     end
+
+    def test_the_page_says_a_requirement_no_run_has_recorded_was_never_checked
+      get "/setup"
+
+      assert_select "td", text: "Never"
+    end
   end
 end
