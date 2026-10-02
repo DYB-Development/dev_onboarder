@@ -22,6 +22,21 @@ requirement :price_key, group: :secrets, purpose: "Stock price key is set",
 - `fix` is a shell command run when the check fails, after which the check runs again.
 - `instruction` is shown when the requirement is still not met.
 
+## Declare machine tools in one line
+
+```ruby
+program "psql", version: "17", install: "brew install postgresql@17"
+ruby_version
+brewfile
+```
+
+- `program` requires a program on the path. `version` is the oldest version accepted, read from the
+  program's `--version` output, and `install` is the command run when the program is missing or too old.
+- `ruby_version` requires the running Ruby to be the one the repo's `.ruby-version` names, and shows
+  both versions when they differ.
+- `brewfile` requires every package in the repo's `Brewfile` and installs the missing ones with
+  Homebrew. Without Homebrew it installs nothing and lists the packages.
+
 ## Run it
 
 ```
