@@ -17,5 +17,18 @@ module DevOnboarder
         assert_equal %i[bundle databases], Requirements.load(path).map(&:key)
       end
     end
+
+    def test_a_requirement_declared_inside_a_feature_belongs_to_that_feature
+      Dir.mktmpdir do |dir|
+        path = File.join(dir, "Setupfile")
+        File.write(path, <<~RUBY)
+          feature :payments, "Take a test payment" do
+            requirement :payment_key, group: :secrets, purpose: "Payment test key is set", check: "true"
+          end
+        RUBY
+
+        assert_equal :payments, Requirements.load(path).first.feature
+      end
+    end
   end
 end

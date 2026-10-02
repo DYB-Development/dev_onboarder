@@ -13,7 +13,14 @@ module DevOnboarder
     end
 
     def requirement(key, **attributes)
-      @declared << Requirement.new(key: key, **attributes)
+      @declared << Requirement.new(key: key, feature: @current_feature, **attributes)
+    end
+
+    def feature(name, _description)
+      @current_feature = name
+      yield
+    ensure
+      @current_feature = nil
     end
 
     def to_a
