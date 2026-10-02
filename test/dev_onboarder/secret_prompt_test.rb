@@ -63,6 +63,12 @@ module DevOnboarder
       refute_path_exists @path
     end
 
+    def test_a_run_with_no_keyboard_attached_asks_for_nothing
+      collect(Keyboard.new("abc123\n", interactive: false))
+
+      assert_empty @out.string
+    end
+
     private
 
     def collect(keyboard, ignored: true)

@@ -13,6 +13,8 @@ module DevOnboarder
     end
 
     def collect(requirement)
+      return unless @input.tty?
+
       @out.puts "#{requirement.variable} — #{requirement.instruction}"
       @out.print "Value (what you type is not shown): "
       value = typed_value
