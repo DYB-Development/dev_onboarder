@@ -172,6 +172,13 @@ module DevOnboarder
       assert_nil outcomes.first.fix_output
     end
 
+    def test_a_fix_runs_with_the_time_limit_its_requirement_sets
+      shell = ScriptedShell.new
+      run_setup([requirement(check: "check-db", fix: "fix-db", timeout: 30)], shell)
+
+      assert_equal 30, shell.time_limits.fetch("fix-db")
+    end
+
     private
 
     def requirement(**attributes)

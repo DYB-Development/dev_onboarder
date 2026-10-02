@@ -49,7 +49,7 @@ module DevOnboarder
     end
 
     def run_fix(requirement)
-      run = @shell.run(requirement.fix)
+      run = @shell.run(requirement.fix, timeout: requirement.timeout)
       @fix_outputs[requirement.key] = run.output unless run.success
     end
 
