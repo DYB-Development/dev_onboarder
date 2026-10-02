@@ -16,5 +16,9 @@ module DevOnboarder
     def test_running_a_command_returns_what_it_printed
       assert_equal "to the output\n", Shell.new.run("echo to the output").output
     end
+
+    def test_running_a_command_that_exits_non_zero_does_not_succeed
+      refute Shell.new.run("exit 3").success
+    end
   end
 end

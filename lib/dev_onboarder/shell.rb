@@ -11,8 +11,8 @@ module DevOnboarder
     end
 
     def run(command)
-      output, = Open3.capture2e(command)
-      Run.new(success: true, output: output)
+      output, status = Open3.capture2e(command)
+      Run.new(success: status.success?, output: output)
     end
   end
 end
