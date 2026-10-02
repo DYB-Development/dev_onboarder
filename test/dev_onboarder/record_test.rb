@@ -22,5 +22,11 @@ module DevOnboarder
 
       assert Record.new(@path).result_for(:databases).met
     end
+
+    def test_a_saved_result_is_read_back_with_the_time_it_was_checked
+      Record.new(@path).save(databases: Result.new(met: true, checked_at: CHECKED_AT))
+
+      assert_equal CHECKED_AT, Record.new(@path).result_for(:databases).checked_at
+    end
   end
 end
