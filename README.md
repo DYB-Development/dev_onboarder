@@ -37,6 +37,31 @@ brewfile
 - `brewfile` requires every package in the repo's `Brewfile` and installs the missing ones with
   Homebrew. Without Homebrew it installs nothing and lists the packages.
 
+## Declare secrets and keys in one line
+
+```ruby
+env "PRICE_KEY", from: "the vendor dashboard, under API keys"
+env "MAP_KEY", from: "the team lead", optional: true
+key_file "config/master.key", from: "the team lead"
+```
+
+- `env` requires an environment variable, set either in the shell or in the repo's `.env` file. When
+  it is missing, setup shows where to get it and asks for the value. What is typed is not shown, and it
+  is written to `.env` and to nowhere else.
+- Setup stores a value only when git ignores `.env`. Otherwise it says to add `.env` to `.gitignore`.
+- An `optional` variable is listed when it is missing and does not fail setup or status.
+- `key_file` requires a file to exist and says who to ask for it.
+- Setup asks for nothing when no keyboard is attached, as in CI.
+
+The app reads `.env` when it starts by adding this where it boots:
+
+```ruby
+require "dev_onboarder/env_file"
+DevOnboarder::EnvFile.new(".env").load_into(ENV)
+```
+
+A variable the shell already sets is left as it is.
+
 ## Run it
 
 ```
