@@ -29,6 +29,12 @@ module DevOnboarder
       assert_empty states
     end
 
+    def test_a_requirement_whose_definition_changed_since_the_last_run_is_changed
+      record_result(met: true, fingerprint: "the fingerprint of an earlier definition")
+
+      assert_equal [:changed], states
+    end
+
     private
 
     def states

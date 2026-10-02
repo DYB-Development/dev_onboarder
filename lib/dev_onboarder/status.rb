@@ -22,7 +22,10 @@ module DevOnboarder
     private
 
     def state_of(requirement)
-      :new unless @record.result_for(requirement.key)
+      result = @record.result_for(requirement.key)
+      return :new unless result
+
+      :changed unless result.fingerprint == requirement.fingerprint
     end
   end
 end
