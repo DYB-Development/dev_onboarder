@@ -45,6 +45,12 @@ class SmokeTest < Minitest::Test
     assert_equal "met      ruby — ruby #{RUBY_VERSION} or newer is installed\n", run_command.first
   end
 
+  def test_the_status_command_lists_a_requirement_no_run_has_recorded_as_new
+    declare MARKER
+
+    assert_equal "new      marker — The marker file exists\n", run_command("status").first
+  end
+
   private
 
   def declare(requirements)
