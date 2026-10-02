@@ -24,6 +24,18 @@ module DevOnboarder
       end
     end
 
+    class RecordingSecrets
+      attr_reader :asked
+
+      def initialize
+        @asked = []
+      end
+
+      def collect(requirement)
+        @asked << requirement.key
+      end
+    end
+
     def setup
       @dir = Dir.mktmpdir
       @record = Record.new(File.join(@dir, ".dev_onboarder.json"))
@@ -108,6 +120,13 @@ module DevOnboarder
       assert_includes shell.commands, "fix-key"
     end
 
+    def test_a_developer_is_asked_for_a_variable_that_is_not_set
+      secrets = RecordingSecrets.new
+      run_setup([requirement(check: "check-key", variable: "PRICE_KEY")], ScriptedShell.new, secrets: secrets)
+
+      assert_equal [:databases], secrets.asked
+    end
+
     private
 
     def requirement(**attributes)
@@ -119,8 +138,9 @@ module DevOnboarder
                       check: "check-key", **attributes)
     end
 
-    def run_setup(requirements, shell, feature: nil)
-      Setup.new(requirements: requirements, record: @record, shell: shell, clock: -> { NOW }, feature: feature).call
+    def run_setup(requirements, shell, feature: nil, secrets: nil)
+      Setup.new(requirements: requirements, record: @record, shell: shell, clock: -> { NOW }, feature: feature,
+                secrets: secrets).call
     end
   end
 end
