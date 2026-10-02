@@ -84,5 +84,12 @@ module DevOnboarder
 
       assert_select "td", text: "Not ready"
     end
+
+    def test_the_page_marks_a_feature_whose_requirements_are_met_as_ready
+      record_everything_met
+      get "/setup"
+
+      assert_select "td", text: "Ready"
+    end
   end
 end

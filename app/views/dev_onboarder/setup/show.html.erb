@@ -48,7 +48,7 @@
         {
           feature: entry.feature.name.to_s,
           description: entry.feature.description,
-          status: ui_badge(label: "Not ready", variant: :neutral)
+          status: entry.ready ? ui_badge(label: "Ready", variant: :success) : ui_badge(label: "Not ready", variant: :neutral)
         }
       end
     %>
