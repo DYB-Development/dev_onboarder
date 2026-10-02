@@ -20,5 +20,9 @@ module DevOnboarder
       assert_equal "dev_onboarder: 1 requirement needs setup. Run bundle exec dev_onboarder.",
                    Engine.startup_notice(@dir)
     end
+
+    def test_an_app_with_no_setup_file_gets_no_notice_when_it_starts
+      assert_nil Engine.startup_notice(@dir)
+    end
   end
 end

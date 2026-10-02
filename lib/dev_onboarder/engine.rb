@@ -18,6 +18,8 @@ module DevOnboarder
     isolate_namespace DevOnboarder
 
     def self.startup_notice(root)
+      return unless File.exist?(File.join(root, "Setupfile"))
+
       Overview.new(requirements: Requirements.load(File.join(root, "Setupfile")),
                    record: Record.new(File.join(root, ".dev_onboarder.json"))).notice
     end
