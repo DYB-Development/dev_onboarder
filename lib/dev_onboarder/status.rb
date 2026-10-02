@@ -13,7 +13,16 @@ module DevOnboarder
     end
 
     def call
-      @requirements.map { |requirement| Finding.new(requirement: requirement, state: :new) }
+      @requirements.filter_map do |requirement|
+        state = state_of(requirement)
+        Finding.new(requirement: requirement, state: state) if state
+      end
+    end
+
+    private
+
+    def state_of(requirement)
+      :new unless @record.result_for(requirement.key)
     end
   end
 end

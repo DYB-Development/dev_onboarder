@@ -23,6 +23,12 @@ module DevOnboarder
       assert_equal [:new], states
     end
 
+    def test_a_requirement_met_and_unchanged_since_the_last_run_is_not_listed
+      record_result(met: true, fingerprint: @requirement.fingerprint)
+
+      assert_empty states
+    end
+
     private
 
     def states
