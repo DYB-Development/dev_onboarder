@@ -27,8 +27,14 @@ module DevOnboarder
 
     def report_status
       findings = Status.new(requirements: requirements, record: record).call
-      findings.each { |finding| @out.puts finding_line(finding) }
+      @out.puts status_lines(findings)
       findings.empty? ? 0 : 1
+    end
+
+    def status_lines(findings)
+      return "Nothing has changed since your last setup." if findings.empty?
+
+      findings.map { |finding| finding_line(finding) }
     end
 
     def run_setup

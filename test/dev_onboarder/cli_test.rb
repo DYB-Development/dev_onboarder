@@ -110,6 +110,19 @@ module DevOnboarder
       assert_equal 1, run_cli(["status"])
     end
 
+    def test_status_says_nothing_has_changed_once_a_removed_requirement_is_the_only_difference
+      declare <<~RUBY
+        requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"
+        requirement :old_tool, group: :machine_tools, purpose: "The old tool is installed", check: "check-tool"
+      RUBY
+      run_cli(passing: %w[check-db check-tool])
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"'
+      @out.truncate(@out.rewind)
+      run_cli(["status"])
+
+      assert_equal "Nothing has changed since your last setup.\n", @out.string
+    end
+
     private
 
     def declare(requirements)
