@@ -4,7 +4,7 @@ require_relative "requirement"
 require_relative "record"
 
 module DevOnboarder
-  Outcome = Data.define(:requirement, :met)
+  Outcome = Data.define(:requirement, :met, :last_checked_at)
 
   class Setup
     def initialize(requirements:, record:, shell:, clock:)
@@ -28,7 +28,8 @@ module DevOnboarder
     end
 
     def outcome_for(requirement)
-      Outcome.new(requirement: requirement, met: met?(requirement))
+      Outcome.new(requirement: requirement, met: met?(requirement),
+                  last_checked_at: @record.result_for(requirement.key)&.checked_at)
     end
 
     def met?(requirement)
