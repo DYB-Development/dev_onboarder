@@ -27,6 +27,10 @@ module DevOnboarder
       assert_equal VARIABLE, declare(%(env "#{VARIABLE}", from: "the vendor dashboard")).variable
     end
 
+    def test_a_variable_declared_optional_is_an_optional_requirement
+      assert declare(%(env "#{VARIABLE}", from: "the vendor dashboard", optional: true)).optional
+    end
+
     private
 
     def write(name, contents)

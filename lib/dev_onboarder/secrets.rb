@@ -2,10 +2,10 @@
 
 module DevOnboarder
   module Secrets
-    def env(name, from:)
+    def env(name, from:, optional: false)
       requirement name.downcase.to_sym, group: :secrets, purpose: "#{name} is set",
                                         check: %(test -n "${#{name}:-}" || grep -q "^#{name}=." .env 2>/dev/null),
-                                        instruction: "Get it from #{from}.", variable: name
+                                        instruction: "Get it from #{from}.", variable: name, optional: optional
     end
   end
 end
