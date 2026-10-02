@@ -81,6 +81,12 @@ module DevOnboarder
       assert_equal "PRICE_KEY — add .env to .gitignore, then run setup again to enter its value.\n", @out.string
     end
 
+    def test_a_value_a_developer_types_is_not_shown
+      collect(Keyboard.new("abc123\n"))
+
+      refute_includes @out.string, "abc123"
+    end
+
     private
 
     def collect(keyboard, ignored: true)
