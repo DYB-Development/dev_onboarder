@@ -94,6 +94,13 @@ module DevOnboarder
       refute_includes shell.commands, "fix-key"
     end
 
+    def test_a_requirement_that_is_met_does_not_have_its_fix_run
+      shell = ScriptedShell.new(passing: ["check-db"])
+      run_setup([requirement(check: "check-db", fix: "fix-db")], shell)
+
+      refute_includes shell.commands, "fix-db"
+    end
+
     private
 
     def requirement(**attributes)
