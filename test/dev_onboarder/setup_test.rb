@@ -17,6 +17,10 @@ module DevOnboarder
         @commands = []
       end
 
+      def pass(*commands)
+        @passing.concat(commands)
+      end
+
       def succeeds?(command)
         @commands << command
         @passing.concat(@passing_after.fetch(command, []))
@@ -27,12 +31,15 @@ module DevOnboarder
     class RecordingSecrets
       attr_reader :asked
 
-      def initialize
+      def initialize(shell: nil, supplying: [])
         @asked = []
+        @shell = shell
+        @supplying = supplying
       end
 
       def collect(requirement)
         @asked << requirement.key
+        @shell&.pass(*@supplying)
       end
     end
 
@@ -125,6 +132,14 @@ module DevOnboarder
       run_setup([requirement(check: "check-key", variable: "PRICE_KEY")], ScriptedShell.new, secrets: secrets)
 
       assert_equal [:databases], secrets.asked
+    end
+
+    def test_a_variable_the_developer_supplied_is_met
+      shell = ScriptedShell.new
+      secrets = RecordingSecrets.new(shell: shell, supplying: ["check-key"])
+      outcomes = run_setup([requirement(check: "check-key", variable: "PRICE_KEY")], shell, secrets: secrets)
+
+      assert outcomes.first.met
     end
 
     private

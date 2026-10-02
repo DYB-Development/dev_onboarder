@@ -47,8 +47,10 @@ module DevOnboarder
     end
 
     def supplied?(requirement)
-      @secrets.collect(requirement) if @secrets && requirement.variable
-      false
+      return false unless @secrets && requirement.variable
+
+      @secrets.collect(requirement)
+      check_passes?(requirement)
     end
 
     def check_passes?(requirement)
