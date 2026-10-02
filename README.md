@@ -89,6 +89,31 @@ end
 - `bundle exec dev_onboarder features` lists each feature as ready or not ready, from the record of
   the last run.
 
+## Show the setup page in a Rails app
+
+In a Rails app that has keystone_ui, the gem adds a page that shows what the last setup run recorded:
+every requirement by group with its state and when it was last checked, each feature and whether it is
+ready, and the command to run. The page reads the `Setupfile` and the setup record. It runs no check and
+no fix.
+
+Mount it for local use only, in `config/routes.rb`:
+
+```ruby
+mount DevOnboarder::Engine, at: "/setup" if Rails.env.local?
+```
+
+To draw the page inside the app's own layout, name the controller it inherits from, in an initializer:
+
+```ruby
+DevOnboarder.base_controller = "ApplicationController"
+```
+
+When the app's server starts locally and a requirement outside any feature is new, changed or not met,
+the server output carries one line saying how many need setup and the command to run.
+
+A Rails app without keystone_ui gets no page, and a repo with no Rails app is unaffected. Both use the
+command alone. The page is tested against keystone_ui 0.30.
+
 ## See what changed
 
 ```

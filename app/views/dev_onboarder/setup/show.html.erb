@@ -1,0 +1,61 @@
+<%
+  state_badges = {
+    met: { label: "Met", variant: :success },
+    new: { label: "New", variant: :info },
+    changed: { label: "Changed", variant: :warning },
+    not_met: { label: "Not met", variant: :danger }
+  }
+
+  requirement_columns = [
+    Keystone::Ui::Column.new(:requirement, "Requirement"),
+    Keystone::Ui::Column.new(:purpose, "Purpose"),
+    Keystone::Ui::Column.new(:state, "State"),
+    Keystone::Ui::Column.new(:last_checked, "Last checked", mobile_hidden: true)
+  ]
+%>
+
+<%= ui_page do %>
+  <%= ui_page_header(title: "Setup", subtitle: "What this repo needs on your machine") %>
+
+  <% if @overview.notice.present? %>
+    <%= ui_alert(message: @overview.notice, type: :warning) %>
+  <% else %>
+    <%= ui_alert(message: "Everything outside a feature is set up.", type: :success) %>
+  <% end %>
+
+  <%= ui_section do %>
+    <%= ui_code(caption: "Run this command to set up what is missing") do %>bundle exec dev_onboarder<% end %>
+    <%= ui_copy_button(text: "bundle exec dev_onboarder") %>
+  <% end %>
+
+  <% @overview.groups.each do |group| %>
+    <%
+      requirement_rows = group.rows.map do |row|
+        {
+          requirement: row.requirement.key.to_s,
+          purpose: row.requirement.purpose,
+          state: ui_badge(**state_badges.fetch(row.state)),
+          last_checked: row.checked_at ? row.checked_at.utc.strftime("%Y-%m-%d %H:%M UTC") : "Never"
+        }
+      end
+    %>
+    <%= ui_section(title: group.name.to_s.tr("_", " ").capitalize) do %>
+      <%= ui_data_table(items: requirement_rows, columns: requirement_columns) %>
+    <% end %>
+  <% end %>
+
+  <% if @overview.features.any? %>
+    <%
+      feature_rows = @overview.features.map do |entry|
+        {
+          feature: entry.feature.name.to_s,
+          description: entry.feature.description,
+          status: entry.ready ? ui_badge(label: "Ready", variant: :success) : ui_badge(label: "Not ready", variant: :neutral)
+        }
+      end
+    %>
+    <%= ui_section(title: "Features") do %>
+      <%= ui_data_table(items: feature_rows, columns: [{ feature: "Feature" }, { description: "Description" }, { status: "Status" }]) %>
+    <% end %>
+  <% end %>
+<% end %>
