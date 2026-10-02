@@ -10,9 +10,15 @@ module DevOnboarder
       system(command, out: File::NULL, err: File::NULL) == true
     end
 
-    def run(command)
-      output, status = Open3.capture2e(command)
-      Run.new(success: status.success?, output: output)
+    def run(command, timeout: nil)
+      Open3.popen2e(command, pgroup: true) do |input, output, process|
+        input.close
+        printed = Thread.new { output.read }
+        next Run.new(success: process.value.success?, output: printed.value) if process.join(timeout)
+
+        Process.kill("TERM", -process.pid)
+        Run.new(success: false, output: printed.value)
+      end
     end
   end
 end

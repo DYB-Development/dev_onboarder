@@ -20,5 +20,9 @@ module DevOnboarder
     def test_running_a_command_that_exits_non_zero_does_not_succeed
       refute Shell.new.run("exit 3").success
     end
+
+    def test_a_command_that_runs_past_its_time_limit_is_stopped
+      refute Shell.new.run("sleep 3", timeout: 0.2).success
+    end
   end
 end
