@@ -19,6 +19,7 @@ module DevOnboarder
 
     def call
       outcomes.each { |outcome| @out.puts lines_for(outcome) }
+      1
     end
 
     private

@@ -57,6 +57,12 @@ module DevOnboarder
       assert_equal 1, @out.string.lines.size
     end
 
+    def test_the_command_fails_when_a_requirement_is_still_not_met
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"'
+
+      assert_equal 1, run_cli
+    end
+
     private
 
     def declare(requirements)
