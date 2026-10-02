@@ -37,6 +37,10 @@ module DevOnboarder
       assert_equal "brew install libvips", declare('program "vips", install: "brew install libvips"').fix
     end
 
+    def test_a_program_with_a_minimum_version_says_so_in_what_it_is_for
+      assert_equal "psql 17 or newer is installed", declare('program "psql", version: "17"').purpose
+    end
+
     private
 
     def declare(line)

@@ -8,7 +8,7 @@ module DevOnboarder
 
     def program(name, version: nil, install: nil)
       requirement name.tr("-", "_").to_sym, group: :machine_tools,
-                                            purpose: "#{[name, version].compact.join(" ")} is installed",
+                                            purpose: "#{name}#{" #{version} or newer" if version} is installed",
                                             check: installed_check(name, version), fix: install
     end
 
