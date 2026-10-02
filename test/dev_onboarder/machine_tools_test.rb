@@ -15,10 +15,12 @@ module DevOnboarder
       FileUtils.remove_entry(@dir)
     end
 
-    def test_a_declared_program_is_a_machine_tools_requirement_named_after_it
-      declared = declare('program "pg-dump"')
+    def test_a_declared_program_is_a_requirement_named_after_it
+      assert_equal :pg_dump, declare('program "pg-dump"').key
+    end
 
-      assert_equal %i[pg_dump machine_tools], [declared.key, declared.group]
+    def test_a_declared_program_is_in_the_machine_tools_group
+      assert_equal :machine_tools, declare('program "pg-dump"').group
     end
 
     def test_a_program_that_is_not_installed_is_not_met
