@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [0.7.0]
+
+- A failed fix shows what it printed, and a requirement can set a time limit for its fix.
+- An error in the `Setupfile`, a repeated key and a missing `Setupfile` are reported without a stack trace.
+- A setup record that cannot be read is reported and written again.
+- The setup page says so when the repo has no `Setupfile`.
+
 ## [0.6.0]
 
 - A Rails app with keystone_ui can mount `DevOnboarder::Engine` to show the setup page.

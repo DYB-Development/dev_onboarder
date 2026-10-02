@@ -26,12 +26,22 @@ module DevOnboarder
                            fingerprint: stored["fingerprint"])
     end
 
+    def unreadable?
+      File.exist?(@path) && parsed.nil?
+    end
+
     private
 
     def stored_results
-      return {} unless File.exist?(@path)
+      parsed || {}
+    end
+
+    def parsed
+      return unless File.exist?(@path)
 
       JSON.parse(File.read(@path)).fetch("results")
+    rescue JSON::ParserError, KeyError
+      nil
     end
 
     def stored(result)

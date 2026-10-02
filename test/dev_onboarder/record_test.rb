@@ -45,5 +45,17 @@ module DevOnboarder
 
       assert Record.new(@path).result_for(:databases).met
     end
+
+    def test_a_setup_record_that_cannot_be_read_holds_no_results
+      File.write(@path, "{ this is not a setup record")
+
+      assert_nil Record.new(@path).result_for(:databases)
+    end
+
+    def test_a_setup_record_that_cannot_be_read_says_it_is_unreadable
+      File.write(@path, "{ this is not a setup record")
+
+      assert_predicate Record.new(@path), :unreadable?
+    end
   end
 end

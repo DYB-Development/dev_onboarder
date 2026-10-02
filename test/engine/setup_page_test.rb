@@ -103,5 +103,12 @@ module DevOnboarder
 
       assert_select "body[data-layout=host]"
     end
+
+    def test_the_page_says_so_when_the_repo_has_no_requirements_file
+      FileUtils.rm_f(Rails.root.join("Setupfile"))
+      get "/setup"
+
+      assert_includes response.body, "This repo has no Setupfile, so there is nothing to set up."
+    end
   end
 end

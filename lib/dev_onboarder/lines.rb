@@ -5,7 +5,7 @@ module DevOnboarder
     STATE_LABELS = { new: "new    ", changed: "changed", not_met: "not met" }.freeze
 
     def self.for_outcome(outcome)
-      [outcome_line(outcome), instruction(outcome)].compact
+      [outcome_line(outcome), *fix_output(outcome), instruction(outcome)].compact
     end
 
     def self.for_finding(finding)
@@ -21,6 +21,10 @@ module DevOnboarder
         "#{last_checked(outcome)}"
     end
 
+    def self.fix_output(outcome)
+      outcome.fix_output.to_s.lines(chomp: true).map { |line| "         #{line}" }
+    end
+
     def self.instruction(outcome)
       return if outcome.met || outcome.requirement.instruction.nil?
 
@@ -33,6 +37,6 @@ module DevOnboarder
       " (last checked #{outcome.last_checked_at.utc.strftime("%Y-%m-%d %H:%M UTC")})"
     end
 
-    private_class_method :outcome_line, :instruction, :last_checked
+    private_class_method :outcome_line, :fix_output, :instruction, :last_checked
   end
 end

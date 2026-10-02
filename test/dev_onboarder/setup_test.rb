@@ -2,6 +2,7 @@
 
 require "test_helper"
 require "dev_onboarder/setup"
+require "dev_onboarder/shell"
 require "tmpdir"
 
 module DevOnboarder
@@ -9,12 +10,20 @@ module DevOnboarder
     NOW = Time.utc(2026, 10, 2, 14, 30)
 
     class ScriptedShell
-      attr_reader :commands
+      attr_reader :commands, :time_limits
 
-      def initialize(passing: [], passing_after: {})
+      def initialize(passing: [], passing_after: {}, failing_with: {})
         @passing = passing
         @passing_after = passing_after
+        @failing_with = failing_with
         @commands = []
+        @time_limits = {}
+      end
+
+      def run(command, timeout: nil)
+        @time_limits[command] = timeout
+        succeeds?(command)
+        Shell::Run.new(success: !@failing_with.key?(command), output: @failing_with.fetch(command, "done\n"))
       end
 
       def pass(*commands)
@@ -147,6 +156,27 @@ module DevOnboarder
       run_setup([payment_key(variable: "PAYMENT_KEY")], ScriptedShell.new, secrets: secrets)
 
       assert_empty secrets.asked
+    end
+
+    def test_a_fix_that_fails_is_reported_with_what_it_printed
+      shell = ScriptedShell.new(failing_with: { "fix-db" => "could not connect\n" })
+      outcomes = run_setup([requirement(check: "check-db", fix: "fix-db")], shell)
+
+      assert_equal "could not connect\n", outcomes.first.fix_output
+    end
+
+    def test_a_fix_that_succeeds_is_not_reported_with_what_it_printed
+      shell = ScriptedShell.new(passing_after: { "fix-db" => ["check-db"] })
+      outcomes = run_setup([requirement(check: "check-db", fix: "fix-db")], shell)
+
+      assert_nil outcomes.first.fix_output
+    end
+
+    def test_a_fix_runs_with_the_time_limit_its_requirement_sets
+      shell = ScriptedShell.new
+      run_setup([requirement(check: "check-db", fix: "fix-db", timeout: 30)], shell)
+
+      assert_equal 30, shell.time_limits.fetch("fix-db")
     end
 
     private

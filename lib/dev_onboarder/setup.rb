@@ -4,7 +4,7 @@ require_relative "requirement"
 require_relative "record"
 
 module DevOnboarder
-  Outcome = Data.define(:requirement, :met, :last_checked_at)
+  Outcome = Data.define(:requirement, :met, :last_checked_at, :fix_output)
 
   class Setup
     def initialize(requirements:, record:, shell:, clock:, feature: nil, secrets: nil)
@@ -14,6 +14,7 @@ module DevOnboarder
       @shell = shell
       @clock = clock
       @secrets = secrets
+      @fix_outputs = {}
     end
 
     def call
@@ -34,7 +35,7 @@ module DevOnboarder
     end
 
     def outcome_for(requirement)
-      Outcome.new(requirement: requirement, met: met?(requirement),
+      Outcome.new(requirement: requirement, met: met?(requirement), fix_output: @fix_outputs[requirement.key],
                   last_checked_at: @record.result_for(requirement.key)&.checked_at)
     end
 
@@ -43,8 +44,13 @@ module DevOnboarder
       return false unless requirement.feature == @feature
       return supplied?(requirement) unless requirement.fixable?
 
-      @shell.succeeds?(requirement.fix)
+      run_fix(requirement)
       check_passes?(requirement)
+    end
+
+    def run_fix(requirement)
+      run = @shell.run(requirement.fix, timeout: requirement.timeout)
+      @fix_outputs[requirement.key] = run.output unless run.success
     end
 
     def supplied?(requirement)

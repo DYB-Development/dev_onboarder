@@ -44,5 +44,51 @@ module DevOnboarder
                      Requirements.load(path).features
       end
     end
+
+    def test_an_error_in_a_requirements_file_is_reported_with_the_line_it_is_on
+      contents = <<~RUBY
+        requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "true"
+        requirment :seeds, group: :repo_setup, purpose: "Seed data is loaded", check: "true"
+      RUBY
+
+      assert_match(/\ASetupfile line 2: undefined method .requirment./, error_from(contents))
+    end
+
+    def test_a_requirements_file_that_is_not_valid_ruby_is_reported_with_the_line_it_is_on
+      assert_match(/\ASetupfile line 1: /, error_from("requirement :databases, group: (\n"))
+    end
+
+    def test_two_requirements_with_the_same_key_are_refused_with_the_line_of_each
+      contents = <<~RUBY
+        requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "true"
+        requirement :seeds, group: :repo_setup, purpose: "Seed data is loaded", check: "true"
+        requirement :databases, group: :repo_setup, purpose: "Databases are migrated", check: "true"
+      RUBY
+
+      assert_equal "Setupfile line 3: databases is already declared on line 1", error_from(contents)
+    end
+
+    def test_a_repo_with_no_requirements_file_is_reported_as_having_none
+      error = assert_raises(DevOnboarder::Error) { Requirements.load("/a/repo/with/no/Setupfile") }
+
+      assert_equal "This repo has no Setupfile, so there is nothing to set up.", error.message
+    end
+
+    private
+
+    def load_setupfile(contents)
+      Dir.mktmpdir do |dir|
+        path = File.join(dir, "Setupfile")
+        File.write(path, contents)
+        Requirements.load(path)
+      end
+    end
+
+    def error_from(contents)
+      load_setupfile(contents)
+      nil
+    rescue DevOnboarder::Error => e
+      e.message
+    end
   end
 end

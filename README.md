@@ -114,6 +114,17 @@ the server output carries one line saying how many need setup and the command to
 A Rails app without keystone_ui gets no page, and a repo with no Rails app is unaffected. Both use the
 command alone. The page is tested against keystone_ui 0.30.
 
+## When something fails
+
+- A fix that exits non-zero has what it printed shown under its requirement.
+- A requirement can set a time limit for its fix, in seconds: `fix: "bin/rails db:prepare", timeout: 120`.
+  A fix that runs past it is stopped and reported as failed.
+- An error in the `Setupfile` is reported with the line it is on, and no stack trace.
+- Two requirements with the same key are refused, with the line of each.
+- A setup record that cannot be read is reported, and the run writes it again.
+- A run writes the setup record once, when it ends, so a run stopped part way leaves the earlier record
+  as it was.
+
 ## See what changed
 
 ```

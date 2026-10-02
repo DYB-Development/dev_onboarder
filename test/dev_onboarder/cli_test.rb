@@ -12,9 +12,15 @@ module DevOnboarder
     class ScriptedShell
       attr_reader :commands
 
-      def initialize(passing)
+      def initialize(passing, failing_with = {})
         @passing = passing
+        @failing_with = failing_with
         @commands = []
+      end
+
+      def run(command, timeout: nil)
+        @commands << [command, timeout]
+        Shell::Run.new(success: !@failing_with.key?(command), output: @failing_with.fetch(command, "done\n"))
       end
 
       def succeeds?(command)
@@ -219,14 +225,30 @@ module DevOnboarder
       assert_equal 0, run_cli(["status"])
     end
 
+    def test_a_fix_that_fails_shows_what_it_printed_under_its_requirement
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db", fix: "fix-db"'
+      run_cli(failing_with: { "fix-db" => "could not connect\nto the server\n" })
+
+      assert_equal "not met  databases — Databases exist\n         could not connect\n         to the server\n",
+                   @out.string
+    end
+
+    def test_a_run_says_when_the_setup_record_could_not_be_read
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"'
+      File.write(File.join(@dir, ".dev_onboarder.json"), "{ this is not a setup record")
+      run_cli(passing: ["check-db"])
+
+      assert_equal "The setup record could not be read, so this run writes it again.\n", @out.string.lines.first
+    end
+
     private
 
     def declare(requirements)
       File.write(File.join(@dir, "Setupfile"), requirements)
     end
 
-    def run_cli(argv = [], passing: [], input: StringIO.new)
-      @shell = ScriptedShell.new(passing)
+    def run_cli(argv = [], passing: [], input: StringIO.new, failing_with: {})
+      @shell = ScriptedShell.new(passing, failing_with)
       CLI.new(argv, out: @out, dir: @dir, shell: @shell, clock: -> { NOW }, input: input).call
     end
   end
