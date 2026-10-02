@@ -41,7 +41,17 @@ module DevOnboarder
       assert_equal "psql 17 or newer is installed", declare('program "psql", version: "17"').purpose
     end
 
+    def test_the_ruby_version_requirement_is_met_when_the_repo_names_the_running_ruby
+      write ".ruby-version", "#{RUBY_VERSION}\n"
+
+      assert passes?(declare("ruby_version"))
+    end
+
     private
+
+    def write(name, contents)
+      File.write(File.join(@dir, name), contents)
+    end
 
     def declare(line)
       path = File.join(@dir, "Setupfile")

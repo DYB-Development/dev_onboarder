@@ -12,6 +12,11 @@ module DevOnboarder
                                             check: installed_check(name, version), fix: install
     end
 
+    def ruby_version
+      requirement :ruby_version, group: :machine_tools, purpose: "The Ruby the repo names is the running Ruby",
+                                 check: "true"
+    end
+
     private
 
     def installed_check(name, version)
