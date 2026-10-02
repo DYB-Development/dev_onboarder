@@ -28,7 +28,7 @@ module DevOnboarder
     def report_status
       findings = Status.new(requirements: requirements, record: record).call
       findings.each { |finding| @out.puts finding_line(finding) }
-      0
+      findings.empty? ? 0 : 1
     end
 
     def run_setup

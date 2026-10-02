@@ -104,6 +104,12 @@ module DevOnboarder
       assert_includes @out.string, "changed  databases — Databases exist"
     end
 
+    def test_status_fails_when_a_requirement_is_listed
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"'
+
+      assert_equal 1, run_cli(["status"])
+    end
+
     private
 
     def declare(requirements)
