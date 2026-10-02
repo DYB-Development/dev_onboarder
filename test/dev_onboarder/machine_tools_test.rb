@@ -78,6 +78,12 @@ module DevOnboarder
       assert_equal "command -v brew >/dev/null && brew bundle --file=Brewfile --no-upgrade", declare("brewfile").fix
     end
 
+    def test_the_package_list_requirement_lists_the_packages_for_a_developer_without_homebrew
+      write "Brewfile", BREWFILE
+
+      assert_equal "Without Homebrew, install these yourself: postgresql@17, vips.", declare("brewfile").instruction
+    end
+
     private
 
     def write(name, contents)

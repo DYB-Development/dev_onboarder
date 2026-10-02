@@ -23,10 +23,15 @@ module DevOnboarder
     def brewfile
       requirement :brewfile, group: :machine_tools, purpose: "Every package in the Brewfile is installed",
                              check: "#{HOMEBREW_ON_PATH} && brew bundle check --file=Brewfile --no-upgrade",
-                             fix: "#{HOMEBREW_ON_PATH} && brew bundle --file=Brewfile --no-upgrade"
+                             fix: "#{HOMEBREW_ON_PATH} && brew bundle --file=Brewfile --no-upgrade",
+                             instruction: "Without Homebrew, install these yourself: #{brewfile_packages.join(", ")}."
     end
 
     private
+
+    def brewfile_packages
+      File.read(File.join(@dir, "Brewfile")).scan(/^\s*(?:brew|cask)\s+["']([^"']+)["']/).flatten
+    end
 
     def installed_check(name, version)
       on_path = "command -v #{name} >/dev/null"
