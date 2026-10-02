@@ -10,11 +10,15 @@ module DevOnboarder
     NOW = Time.utc(2026, 10, 2, 14, 30)
 
     class ScriptedShell
+      attr_reader :commands
+
       def initialize(passing)
         @passing = passing
+        @commands = []
       end
 
       def succeeds?(command)
+        @commands << command
         @passing.include?(command)
       end
     end
@@ -77,14 +81,22 @@ module DevOnboarder
       assert_includes @out.string, "databases — Databases exist (last checked 2026-10-02 14:30 UTC)"
     end
 
+    def test_status_runs_no_check_and_no_fix
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"'
+      run_cli(["status"])
+
+      assert_empty @shell.commands
+    end
+
     private
 
     def declare(requirements)
       File.write(File.join(@dir, "Setupfile"), requirements)
     end
 
-    def run_cli(passing: [])
-      CLI.new([], out: @out, dir: @dir, shell: ScriptedShell.new(passing), clock: -> { NOW }).call
+    def run_cli(argv = [], passing: [])
+      @shell = ScriptedShell.new(passing)
+      CLI.new(argv, out: @out, dir: @dir, shell: @shell, clock: -> { NOW }).call
     end
   end
 end

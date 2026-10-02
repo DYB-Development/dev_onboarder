@@ -3,6 +3,7 @@
 require_relative "requirements"
 require_relative "setup"
 require_relative "shell"
+require_relative "status"
 
 module DevOnboarder
   class CLI
@@ -18,16 +19,28 @@ module DevOnboarder
     end
 
     def call
-      outcomes = run_setup
-      outcomes.each { |outcome| @out.puts lines_for(outcome) }
-      outcomes.all?(&:met) ? 0 : 1
+      @argv.first == "status" ? report_status : run_setup
     end
 
     private
 
+    def report_status
+      Status.new(requirements: requirements, record: record).call
+      0
+    end
+
     def run_setup
-      Setup.new(requirements: Requirements.load(File.join(@dir, REQUIREMENTS_FILE)),
-                record: Record.new(File.join(@dir, RECORD_FILE)), shell: @shell, clock: @clock).call
+      outcomes = Setup.new(requirements: requirements, record: record, shell: @shell, clock: @clock).call
+      outcomes.each { |outcome| @out.puts lines_for(outcome) }
+      outcomes.all?(&:met) ? 0 : 1
+    end
+
+    def requirements
+      Requirements.load(File.join(@dir, REQUIREMENTS_FILE))
+    end
+
+    def record
+      Record.new(File.join(@dir, RECORD_FILE))
     end
 
     def lines_for(outcome)
