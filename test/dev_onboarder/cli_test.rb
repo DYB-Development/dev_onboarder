@@ -186,6 +186,12 @@ module DevOnboarder
       assert_equal 0, run_cli(["status"])
     end
 
+    def test_the_command_succeeds_when_only_an_optional_variable_is_missing
+      declare 'env "PRICE_KEY", from: "the vendor dashboard", optional: true'
+
+      assert_equal 0, run_cli
+    end
+
     private
 
     def declare(requirements)

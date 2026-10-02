@@ -70,7 +70,11 @@ module DevOnboarder
       outcomes = Setup.new(requirements: requirements, record: record, shell: @shell, clock: @clock,
                            feature: feature).call
       outcomes.each { |outcome| @out.puts Lines.for_outcome(outcome) }
-      outcomes.select { |outcome| outcome.requirement.feature == feature }.all?(&:met) ? 0 : 1
+      outcomes.select { |outcome| required?(outcome.requirement) }.all?(&:met) ? 0 : 1
+    end
+
+    def required?(requirement)
+      requirement.feature == feature && !requirement.optional
     end
 
     def feature
