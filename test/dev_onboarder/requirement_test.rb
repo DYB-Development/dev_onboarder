@@ -23,6 +23,11 @@ module DevOnboarder
       refute_equal fingerprint_of(check: "bin/rails db:version"), fingerprint_of(check: "bin/rails db:migrate:status")
     end
 
+    def test_a_requirement_whose_fix_changes_has_a_different_fingerprint
+      refute_equal fingerprint_of(check: "true", fix: "bin/setup"),
+                   fingerprint_of(check: "true", fix: "bin/rails db:prepare")
+    end
+
     private
 
     def fingerprint_of(**attributes)
