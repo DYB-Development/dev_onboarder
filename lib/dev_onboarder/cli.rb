@@ -40,7 +40,7 @@ module DevOnboarder
     def run_setup
       outcomes = Setup.new(requirements: requirements, record: record, shell: @shell, clock: @clock).call
       outcomes.each { |outcome| @out.puts lines_for(outcome) }
-      outcomes.all?(&:met) ? 0 : 1
+      outcomes.reject { |outcome| outcome.requirement.feature }.all?(&:met) ? 0 : 1
     end
 
     def finding_line(finding)

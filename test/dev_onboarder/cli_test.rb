@@ -123,6 +123,19 @@ module DevOnboarder
       assert_equal "Nothing has changed since your last setup.\n", @out.string
     end
 
+    PAYMENTS = <<~RUBY
+      requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"
+      feature :payments, "Take a test payment" do
+        requirement :payment_key, group: :secrets, purpose: "Payment test key is set", check: "check-key"
+      end
+    RUBY
+
+    def test_the_command_succeeds_when_only_a_features_requirement_is_not_met
+      declare PAYMENTS
+
+      assert_equal 0, run_cli(passing: ["check-db"])
+    end
+
     private
 
     def declare(requirements)
