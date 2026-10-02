@@ -32,6 +32,8 @@ module DevOnboarder
       return {} unless File.exist?(@path)
 
       JSON.parse(File.read(@path)).fetch("results")
+    rescue JSON::ParserError, KeyError
+      {}
     end
 
     def stored(result)
