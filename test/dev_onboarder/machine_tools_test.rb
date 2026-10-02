@@ -21,6 +21,10 @@ module DevOnboarder
       assert_equal %i[pg_dump machine_tools], [declared.key, declared.group]
     end
 
+    def test_a_program_that_is_not_installed_is_not_met
+      refute passes?(declare('program "a-program-nobody-has-installed"'))
+    end
+
     private
 
     def declare(line)
