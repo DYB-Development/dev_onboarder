@@ -72,6 +72,12 @@ module DevOnboarder
                    declare("brewfile").check
     end
 
+    def test_the_package_list_requirement_installs_missing_packages_only_where_homebrew_is_present
+      write "Brewfile", BREWFILE
+
+      assert_equal "command -v brew >/dev/null && brew bundle --file=Brewfile --no-upgrade", declare("brewfile").fix
+    end
+
     private
 
     def write(name, contents)

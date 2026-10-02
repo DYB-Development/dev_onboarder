@@ -22,7 +22,8 @@ module DevOnboarder
 
     def brewfile
       requirement :brewfile, group: :machine_tools, purpose: "Every package in the Brewfile is installed",
-                             check: "#{HOMEBREW_ON_PATH} && brew bundle check --file=Brewfile --no-upgrade"
+                             check: "#{HOMEBREW_ON_PATH} && brew bundle check --file=Brewfile --no-upgrade",
+                             fix: "#{HOMEBREW_ON_PATH} && brew bundle --file=Brewfile --no-upgrade"
     end
 
     private
