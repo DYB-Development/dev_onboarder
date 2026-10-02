@@ -25,7 +25,9 @@ module DevOnboarder
       result = @record.result_for(requirement.key)
       return :new unless result
 
-      :changed unless result.fingerprint == requirement.fingerprint
+      return :changed unless result.fingerprint == requirement.fingerprint
+
+      :not_met unless result.met
     end
   end
 end

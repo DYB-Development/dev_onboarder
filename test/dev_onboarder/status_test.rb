@@ -35,6 +35,12 @@ module DevOnboarder
       assert_equal [:changed], states
     end
 
+    def test_a_requirement_the_last_run_left_not_met_is_not_met
+      record_result(met: false, fingerprint: @requirement.fingerprint)
+
+      assert_equal [:not_met], states
+    end
+
     private
 
     def states
