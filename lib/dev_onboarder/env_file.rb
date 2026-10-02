@@ -7,7 +7,15 @@ module DevOnboarder
     end
 
     def set(name, value)
-      File.write(@path, "#{name}=#{value}\n")
+      File.write(@path, values.merge(name => value).map { |key, stored| "#{key}=#{stored}\n" }.join)
+    end
+
+    private
+
+    def values
+      return {} unless File.exist?(@path)
+
+      File.readlines(@path, chomp: true).to_h { |line| line.split("=", 2) }
     end
   end
 end

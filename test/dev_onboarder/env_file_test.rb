@@ -20,5 +20,12 @@ module DevOnboarder
 
       assert_equal "PRICE_KEY=abc123\n", File.read(@path)
     end
+
+    def test_setting_a_value_keeps_the_values_already_in_the_file
+      EnvFile.new(@path).set("PRICE_KEY", "abc123")
+      EnvFile.new(@path).set("MAP_KEY", "xyz789")
+
+      assert_equal "PRICE_KEY=abc123\nMAP_KEY=xyz789\n", File.read(@path)
+    end
   end
 end
