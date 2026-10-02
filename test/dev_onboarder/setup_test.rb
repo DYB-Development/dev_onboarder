@@ -62,7 +62,7 @@ module DevOnboarder
     def test_a_run_records_each_requirement_with_the_time_it_was_checked
       run_setup([requirement(check: "check-db")], ScriptedShell.new(passing: ["check-db"]))
 
-      assert_equal Result.new(met: true, checked_at: NOW), @record.result_for(:databases)
+      assert_equal NOW, @record.result_for(:databases).checked_at
     end
 
     def test_a_second_run_reports_when_each_requirement_was_last_checked
@@ -71,6 +71,13 @@ module DevOnboarder
       outcomes = run_setup([requirement(check: "check-db")], ScriptedShell.new(passing: ["check-db"]))
 
       assert_equal earlier, outcomes.first.last_checked_at
+    end
+
+    def test_a_run_records_each_requirement_with_its_fingerprint
+      declared = requirement(check: "check-db")
+      run_setup([declared], ScriptedShell.new(passing: ["check-db"]))
+
+      assert_equal declared.fingerprint, @record.result_for(:databases).fingerprint
     end
 
     private

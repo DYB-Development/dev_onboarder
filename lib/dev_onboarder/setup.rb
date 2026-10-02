@@ -24,7 +24,11 @@ module DevOnboarder
 
     def results_of(outcomes)
       checked_at = @clock.call
-      outcomes.to_h { |outcome| [outcome.requirement.key, Result.new(met: outcome.met, checked_at: checked_at)] }
+      outcomes.to_h { |outcome| [outcome.requirement.key, result_of(outcome, checked_at)] }
+    end
+
+    def result_of(outcome, checked_at)
+      Result.new(met: outcome.met, checked_at: checked_at, fingerprint: outcome.requirement.fingerprint)
     end
 
     def outcome_for(requirement)
