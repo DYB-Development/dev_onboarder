@@ -2,8 +2,9 @@
 
 module DevOnboarder
   module MachineTools
-    def program(name)
-      requirement name.tr("-", "_").to_sym, group: :machine_tools, purpose: "#{name} is installed",
+    def program(name, version: nil)
+      requirement name.tr("-", "_").to_sym, group: :machine_tools,
+                                            purpose: "#{[name, version].compact.join(" ")} is installed",
                                             check: "command -v #{name} >/dev/null"
     end
   end

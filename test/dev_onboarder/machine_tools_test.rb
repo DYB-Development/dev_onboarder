@@ -25,6 +25,10 @@ module DevOnboarder
       refute passes?(declare('program "a-program-nobody-has-installed"'))
     end
 
+    def test_a_program_at_its_minimum_version_is_met
+      assert passes?(declare(%(program "ruby", version: "#{RUBY_VERSION}")))
+    end
+
     private
 
     def declare(line)
