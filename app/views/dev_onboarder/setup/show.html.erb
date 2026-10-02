@@ -1,7 +1,15 @@
 <%
+  state_badges = {
+    met: { label: "Met", variant: :success },
+    new: { label: "New", variant: :info },
+    changed: { label: "Changed", variant: :warning },
+    not_met: { label: "Not met", variant: :danger }
+  }
+
   requirement_columns = [
     Keystone::Ui::Column.new(:requirement, "Requirement"),
-    Keystone::Ui::Column.new(:purpose, "Purpose")
+    Keystone::Ui::Column.new(:purpose, "Purpose"),
+    Keystone::Ui::Column.new(:state, "State")
   ]
 %>
 
@@ -11,7 +19,8 @@
       requirement_rows = group.rows.map do |row|
         {
           requirement: row.requirement.key.to_s,
-          purpose: row.requirement.purpose
+          purpose: row.requirement.purpose,
+          state: ui_badge(**state_badges.fetch(row.state))
         }
       end
     %>

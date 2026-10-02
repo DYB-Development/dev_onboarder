@@ -32,5 +32,11 @@ module DevOnboarder
 
       assert_includes response.body, "Repo setup"
     end
+
+    def test_the_page_marks_a_requirement_no_run_has_recorded_as_new
+      get "/setup"
+
+      assert_select "td", text: "New"
+    end
   end
 end
