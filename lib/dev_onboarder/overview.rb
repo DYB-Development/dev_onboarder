@@ -6,7 +6,7 @@ require_relative "status"
 module DevOnboarder
   class Overview
     Group = Data.define(:name, :rows)
-    Row = Data.define(:requirement, :state)
+    Row = Data.define(:requirement, :state, :checked_at)
 
     def initialize(requirements:, record:)
       @requirements = requirements
@@ -22,7 +22,8 @@ module DevOnboarder
     private
 
     def row_for(requirement)
-      Row.new(requirement: requirement, state: states.fetch(requirement.key, :met))
+      Row.new(requirement: requirement, state: states.fetch(requirement.key, :met),
+              checked_at: @record.result_for(requirement.key)&.checked_at)
     end
 
     def states

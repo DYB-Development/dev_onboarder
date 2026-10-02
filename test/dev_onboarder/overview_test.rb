@@ -41,6 +41,12 @@ module DevOnboarder
       assert_equal :met, overview.groups.first.rows.first.state
     end
 
+    def test_a_requirement_is_listed_with_when_it_was_last_checked
+      record_met(:databases)
+
+      assert_equal CHECKED_AT, overview.groups.first.rows.first.checked_at
+    end
+
     private
 
     def overview
