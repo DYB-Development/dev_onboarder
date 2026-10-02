@@ -18,11 +18,16 @@ module DevOnboarder
     def self.load(path)
       new(File.dirname(path)).tap { |requirements| requirements.instance_eval(File.read(path), path) }
     rescue ScriptError, StandardError => e
-      raise Error, "Setupfile line #{line_of(e, path)}: #{e.message.lines.first.chomp}"
+      raise Error, "Setupfile line #{line_of(e, path)}: #{reason_of(e, path)}"
     end
 
     def self.line_of(error, path)
-      error.backtrace_locations.find { |location| location.path == path }&.lineno
+      error.backtrace_locations&.find { |location| location.path == path }&.lineno ||
+        error.message[/#{Regexp.escape(path)}:(\d+)/, 1]
+    end
+
+    def self.reason_of(error, path)
+      error.message.lines.first.chomp.sub(/\A#{Regexp.escape(path)}:\d+: /, "")
     end
 
     def initialize(dir)

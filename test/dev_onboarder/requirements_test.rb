@@ -54,6 +54,10 @@ module DevOnboarder
       assert_match(/\ASetupfile line 2: undefined method .requirment./, error_from(contents))
     end
 
+    def test_a_requirements_file_that_is_not_valid_ruby_is_reported_with_the_line_it_is_on
+      assert_match(/\ASetupfile line 1: /, error_from("requirement :databases, group: (\n"))
+    end
+
     private
 
     def load_setupfile(contents)
