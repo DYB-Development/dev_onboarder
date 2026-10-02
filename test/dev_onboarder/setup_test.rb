@@ -39,6 +39,12 @@ module DevOnboarder
       assert outcomes.first.met
     end
 
+    def test_a_requirement_whose_check_fails_is_not_met
+      outcomes = run_setup([requirement(check: "check-db")], ScriptedShell.new)
+
+      refute outcomes.first.met
+    end
+
     private
 
     def requirement(**attributes)

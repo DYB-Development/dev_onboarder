@@ -15,7 +15,13 @@ module DevOnboarder
     end
 
     def call
-      @requirements.map { |requirement| Outcome.new(requirement: requirement, met: true) }
+      @requirements.map { |requirement| outcome_for(requirement) }
+    end
+
+    private
+
+    def outcome_for(requirement)
+      Outcome.new(requirement: requirement, met: @shell.succeeds?(requirement.check))
     end
   end
 end
