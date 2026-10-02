@@ -69,6 +69,14 @@ module DevOnboarder
       assert_equal 0, run_cli(passing: ["check-db"])
     end
 
+    def test_a_second_run_shows_when_each_requirement_was_last_checked
+      declare 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"'
+      run_cli(passing: ["check-db"])
+      run_cli(passing: ["check-db"])
+
+      assert_includes @out.string, "databases — Databases exist (last checked 2026-10-02 14:30 UTC)"
+    end
+
     private
 
     def declare(requirements)

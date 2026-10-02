@@ -41,7 +41,14 @@ module DevOnboarder
     end
 
     def line_for(outcome)
-      "#{outcome.met ? "met    " : "not met"}  #{outcome.requirement.key} — #{outcome.requirement.purpose}"
+      "#{outcome.met ? "met    " : "not met"}  #{outcome.requirement.key} — #{outcome.requirement.purpose}" \
+        "#{last_checked(outcome)}"
+    end
+
+    def last_checked(outcome)
+      return unless outcome.last_checked_at
+
+      " (last checked #{outcome.last_checked_at.utc.strftime("%Y-%m-%d %H:%M UTC")})"
     end
   end
 end
