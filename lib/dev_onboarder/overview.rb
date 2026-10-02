@@ -6,6 +6,7 @@ require_relative "status"
 module DevOnboarder
   class Overview
     Group = Data.define(:name, :rows)
+    Row = Data.define(:requirement, :state)
 
     def initialize(requirements:, record:)
       @requirements = requirements
@@ -13,7 +14,23 @@ module DevOnboarder
     end
 
     def groups
-      @requirements.group_by(&:group).map { |name, requirements| Group.new(name: name, rows: requirements) }
+      @requirements.group_by(&:group).map do |name, requirements|
+        Group.new(name: name, rows: requirements.map { |requirement| row_for(requirement) })
+      end
+    end
+
+    private
+
+    def row_for(requirement)
+      Row.new(requirement: requirement, state: states.fetch(requirement.key))
+    end
+
+    def states
+      @states ||= findings.to_h { |finding| [finding.requirement.key, finding.state] }
+    end
+
+    def findings
+      @findings ||= Status.new(requirements: @requirements, record: @record).call
     end
   end
 end

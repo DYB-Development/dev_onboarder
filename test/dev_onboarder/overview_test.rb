@@ -31,6 +31,10 @@ module DevOnboarder
       assert_equal %i[repo_setup secrets], overview.groups.map(&:name)
     end
 
+    def test_a_requirement_no_run_has_recorded_is_listed_as_new
+      assert_equal :new, overview.groups.first.rows.first.state
+    end
+
     private
 
     def overview
