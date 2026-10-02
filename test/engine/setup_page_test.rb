@@ -78,5 +78,11 @@ module DevOnboarder
 
       assert_select "td", text: "Take a test payment"
     end
+
+    def test_the_page_marks_a_feature_whose_requirement_is_not_met_as_not_ready
+      get "/setup"
+
+      assert_select "td", text: "Not ready"
+    end
   end
 end

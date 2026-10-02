@@ -47,12 +47,13 @@
       feature_rows = @overview.features.map do |entry|
         {
           feature: entry.feature.name.to_s,
-          description: entry.feature.description
+          description: entry.feature.description,
+          status: ui_badge(label: "Not ready", variant: :neutral)
         }
       end
     %>
     <%= ui_section(title: "Features") do %>
-      <%= ui_data_table(items: feature_rows, columns: [{ feature: "Feature" }, { description: "Description" }]) %>
+      <%= ui_data_table(items: feature_rows, columns: [{ feature: "Feature" }, { description: "Description" }, { status: "Status" }]) %>
     <% end %>
   <% end %>
 <% end %>
