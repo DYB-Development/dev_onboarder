@@ -1,0 +1,25 @@
+# frozen_string_literal: true
+
+require "io/console"
+require_relative "env_file"
+
+module DevOnboarder
+  class SecretPrompt
+    def initialize(env_file:, input:, out:, shell:)
+      @env_file = env_file
+      @input = input
+      @out = out
+      @shell = shell
+    end
+
+    def collect(requirement)
+      @env_file.set(requirement.variable, typed_value)
+    end
+
+    private
+
+    def typed_value
+      @input.noecho(&:gets).to_s.chomp
+    end
+  end
+end
