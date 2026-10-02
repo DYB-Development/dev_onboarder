@@ -165,6 +165,13 @@ module DevOnboarder
       assert_equal "could not connect\n", outcomes.first.fix_output
     end
 
+    def test_a_fix_that_succeeds_is_not_reported_with_what_it_printed
+      shell = ScriptedShell.new(passing_after: { "fix-db" => ["check-db"] })
+      outcomes = run_setup([requirement(check: "check-db", fix: "fix-db")], shell)
+
+      assert_nil outcomes.first.fix_output
+    end
+
     private
 
     def requirement(**attributes)

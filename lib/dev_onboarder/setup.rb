@@ -44,8 +44,13 @@ module DevOnboarder
       return false unless requirement.feature == @feature
       return supplied?(requirement) unless requirement.fixable?
 
-      @fix_outputs[requirement.key] = @shell.run(requirement.fix).output
+      run_fix(requirement)
       check_passes?(requirement)
+    end
+
+    def run_fix(requirement)
+      run = @shell.run(requirement.fix)
+      @fix_outputs[requirement.key] = run.output unless run.success
     end
 
     def supplied?(requirement)
