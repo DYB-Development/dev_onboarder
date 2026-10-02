@@ -15,6 +15,10 @@
 %>
 
 <%= ui_page do %>
+  <% if @overview.notice.present? %>
+    <%= ui_alert(message: @overview.notice, type: :warning) %>
+  <% end %>
+
   <% @overview.groups.each do |group| %>
     <%
       requirement_rows = group.rows.map do |row|

@@ -44,5 +44,11 @@ module DevOnboarder
 
       assert_select "td", text: "Never"
     end
+
+    def test_the_page_warns_how_many_requirements_need_a_setup_run
+      get "/setup"
+
+      assert_includes response.body, "dev_onboarder: 1 requirement needs setup. Run bundle exec dev_onboarder."
+    end
   end
 end
