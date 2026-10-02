@@ -40,7 +40,8 @@ module DevOnboarder
 
     def met?(requirement)
       return true if check_passes?(requirement)
-      return supplied?(requirement) unless requirement.fixable? && requirement.feature == @feature
+      return false unless requirement.feature == @feature
+      return supplied?(requirement) unless requirement.fixable?
 
       @shell.succeeds?(requirement.fix)
       check_passes?(requirement)

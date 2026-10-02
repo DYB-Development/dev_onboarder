@@ -142,6 +142,13 @@ module DevOnboarder
       assert outcomes.first.met
     end
 
+    def test_a_run_that_names_no_feature_does_not_ask_for_a_features_variable
+      secrets = RecordingSecrets.new
+      run_setup([payment_key(variable: "PAYMENT_KEY")], ScriptedShell.new, secrets: secrets)
+
+      assert_empty secrets.asked
+    end
+
     private
 
     def requirement(**attributes)
