@@ -21,4 +21,14 @@ class SmokeTest < Minitest::Test
                    [status.success?, output, File.exist?(File.join(dir, ".dev_onboarder.json"))]
     end
   end
+
+  def test_the_command_checks_a_program_declared_in_one_line
+    Dir.mktmpdir do |dir|
+      File.write(File.join(dir, "Setupfile"), %(program "ruby", version: "#{RUBY_VERSION}"\n))
+
+      output, = Open3.capture2e("ruby", "-I", LIB, EXECUTABLE, chdir: dir)
+
+      assert_equal "met      ruby — ruby #{RUBY_VERSION} or newer is installed\n", output
+    end
+  end
 end

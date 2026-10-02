@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "machine_tools"
 require_relative "requirement"
 
 module DevOnboarder
@@ -7,14 +8,16 @@ module DevOnboarder
 
   class Requirements
     include Enumerable
+    include MachineTools
 
     attr_reader :features
 
     def self.load(path)
-      new.tap { |requirements| requirements.instance_eval(File.read(path), path) }
+      new(File.dirname(path)).tap { |requirements| requirements.instance_eval(File.read(path), path) }
     end
 
-    def initialize
+    def initialize(dir)
+      @dir = dir
       @declared = []
       @features = []
     end

@@ -1,0 +1,103 @@
+# frozen_string_literal: true
+
+require "test_helper"
+require "dev_onboarder/requirements"
+require "dev_onboarder/shell"
+require "tmpdir"
+
+module DevOnboarder
+  class MachineToolsTest < Minitest::Test
+    def setup
+      @dir = Dir.mktmpdir
+    end
+
+    def teardown
+      FileUtils.remove_entry(@dir)
+    end
+
+    def test_a_declared_program_is_a_machine_tools_requirement_named_after_it
+      declared = declare('program "pg-dump"')
+
+      assert_equal %i[pg_dump machine_tools], [declared.key, declared.group]
+    end
+
+    def test_a_program_that_is_not_installed_is_not_met
+      refute passes?(declare('program "a-program-nobody-has-installed"'))
+    end
+
+    def test_a_program_at_its_minimum_version_is_met
+      assert passes?(declare(%(program "ruby", version: "#{RUBY_VERSION}")))
+    end
+
+    def test_a_program_older_than_its_minimum_version_is_not_met
+      refute passes?(declare('program "ruby", version: "99.0"'))
+    end
+
+    def test_a_program_declared_with_how_to_install_it_has_that_as_its_fix
+      assert_equal "brew install libvips", declare('program "vips", install: "brew install libvips"').fix
+    end
+
+    def test_a_program_with_a_minimum_version_says_so_in_what_it_is_for
+      assert_equal "psql 17 or newer is installed", declare('program "psql", version: "17"').purpose
+    end
+
+    def test_the_ruby_version_requirement_is_met_when_the_repo_names_the_running_ruby
+      write ".ruby-version", "#{RUBY_VERSION}\n"
+
+      assert passes?(declare("ruby_version"))
+    end
+
+    def test_the_ruby_version_requirement_is_not_met_when_the_repo_names_another_ruby
+      write ".ruby-version", "0.0.1\n"
+
+      refute passes?(declare("ruby_version"))
+    end
+
+    def test_the_ruby_version_requirement_shows_the_named_and_the_running_ruby
+      write ".ruby-version", "0.0.1\n"
+
+      assert_equal "This repo names Ruby 0.0.1 and you are running Ruby #{RUBY_VERSION}.",
+                   declare("ruby_version").instruction
+    end
+
+    BREWFILE = <<~RUBY
+      brew "postgresql@17"
+      brew "vips"
+    RUBY
+
+    def test_the_package_list_requirement_asks_homebrew_whether_every_package_is_installed
+      write "Brewfile", BREWFILE
+
+      assert_equal "command -v brew >/dev/null && brew bundle check --file=Brewfile --no-upgrade",
+                   declare("brewfile").check
+    end
+
+    def test_the_package_list_requirement_installs_missing_packages_only_where_homebrew_is_present
+      write "Brewfile", BREWFILE
+
+      assert_equal "command -v brew >/dev/null && brew bundle --file=Brewfile --no-upgrade", declare("brewfile").fix
+    end
+
+    def test_the_package_list_requirement_lists_the_packages_for_a_developer_without_homebrew
+      write "Brewfile", BREWFILE
+
+      assert_equal "Without Homebrew, install these yourself: postgresql@17, vips.", declare("brewfile").instruction
+    end
+
+    private
+
+    def write(name, contents)
+      File.write(File.join(@dir, name), contents)
+    end
+
+    def declare(line)
+      path = File.join(@dir, "Setupfile")
+      File.write(path, line)
+      Requirements.load(path).first
+    end
+
+    def passes?(requirement)
+      Shell.new.succeeds?(requirement.check)
+    end
+  end
+end

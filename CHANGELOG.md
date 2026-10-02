@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.4.0]
+
+- `program`, `ruby_version` and `brewfile` declare machine tools requirements in one line each.
+
 ## [0.3.0]
 
 - A `feature` block in the `Setupfile` groups the requirements needed only to test one feature.
