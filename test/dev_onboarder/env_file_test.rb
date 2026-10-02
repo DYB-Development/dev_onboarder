@@ -27,5 +27,13 @@ module DevOnboarder
 
       assert_equal "PRICE_KEY=abc123\nMAP_KEY=xyz789\n", File.read(@path)
     end
+
+    def test_loading_the_file_puts_its_values_into_the_environment
+      EnvFile.new(@path).set("PRICE_KEY", "abc123")
+      environment = {}
+      EnvFile.new(@path).load_into(environment)
+
+      assert_equal({ "PRICE_KEY" => "abc123" }, environment)
+    end
   end
 end

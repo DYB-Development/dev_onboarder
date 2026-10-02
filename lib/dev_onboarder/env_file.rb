@@ -10,6 +10,10 @@ module DevOnboarder
       File.write(@path, values.merge(name => value).map { |key, stored| "#{key}=#{stored}\n" }.join)
     end
 
+    def load_into(environment)
+      environment.update(values)
+    end
+
     private
 
     def values
