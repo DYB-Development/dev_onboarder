@@ -23,6 +23,10 @@ module DevOnboarder
       assert passes?(declare(%(env "#{VARIABLE}", from: "the vendor dashboard")))
     end
 
+    def test_a_declared_variable_names_the_variable_a_developer_is_asked_for
+      assert_equal VARIABLE, declare(%(env "#{VARIABLE}", from: "the vendor dashboard")).variable
+    end
+
     private
 
     def write(name, contents)
