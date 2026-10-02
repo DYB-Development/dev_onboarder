@@ -57,6 +57,12 @@ module DevOnboarder
       assert overview.features.first.ready
     end
 
+    def test_there_is_no_notice_when_every_requirement_outside_a_feature_is_met_and_unchanged
+      record_met(:databases, :seeds)
+
+      assert_nil overview.notice
+    end
+
     private
 
     def overview

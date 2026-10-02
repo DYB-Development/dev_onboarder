@@ -24,6 +24,10 @@ module DevOnboarder
       @requirements.features.map { |feature| FeatureRow.new(feature: feature, ready: ready?(feature)) }
     end
 
+    def notice
+      nil
+    end
+
     private
 
     def ready?(feature)
