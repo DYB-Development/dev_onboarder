@@ -33,6 +33,10 @@ module DevOnboarder
                    fingerprint_of(check: "true", instruction: "Ask the vendor")
     end
 
+    def test_a_requirement_belongs_to_no_feature_unless_it_is_given_one
+      assert_nil Requirement.new(key: :databases, group: :repo_setup, purpose: "Databases exist", check: "true").feature
+    end
+
     private
 
     def fingerprint_of(**attributes)

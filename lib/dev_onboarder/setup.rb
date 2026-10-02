@@ -7,8 +7,9 @@ module DevOnboarder
   Outcome = Data.define(:requirement, :met, :last_checked_at)
 
   class Setup
-    def initialize(requirements:, record:, shell:, clock:)
-      @requirements = requirements
+    def initialize(requirements:, record:, shell:, clock:, feature: nil)
+      @requirements = feature ? requirements.select { |requirement| requirement.feature == feature } : requirements
+      @feature = feature
       @record = record
       @shell = shell
       @clock = clock
@@ -38,7 +39,7 @@ module DevOnboarder
 
     def met?(requirement)
       return true if check_passes?(requirement)
-      return false unless requirement.fixable?
+      return false unless requirement.fixable? && requirement.feature == @feature
 
       @shell.succeeds?(requirement.fix)
       check_passes?(requirement)

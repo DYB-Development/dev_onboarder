@@ -16,7 +16,8 @@ module DevOnboarder
     end
 
     def save(results)
-      File.write(@path, JSON.pretty_generate("results" => results.transform_values { |result| stored(result) }))
+      saved = results.to_h { |key, result| [key.to_s, stored(result)] }
+      File.write(@path, JSON.pretty_generate("results" => stored_results.merge(saved)))
     end
 
     def result_for(key)

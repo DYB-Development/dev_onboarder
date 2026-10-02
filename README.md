@@ -32,6 +32,23 @@ The command lists every requirement as met or not met, and exits with a failure 
 still not met. It writes what it found to `.dev_onboarder.json` in the clone, so a second run shows
 when each requirement was last checked. Add that file to the repo's `.gitignore`.
 
+## Declare what one feature needs
+
+A requirement needed only to test one feature goes inside a `feature` block:
+
+```ruby
+feature :payments, "Take a test payment" do
+  requirement :payment_key, group: :secrets, purpose: "Payment test key is set",
+                            check: "test -n \"$PAYMENT_KEY\"", instruction: "Copy the test key from the payment dashboard"
+end
+```
+
+- `bundle exec dev_onboarder` checks a feature's requirements, runs none of their fixes, and does not
+  fail because of them.
+- `bundle exec dev_onboarder setup payments` checks and fixes only that feature's requirements.
+- `bundle exec dev_onboarder features` lists each feature as ready or not ready, from the record of
+  the last run.
+
 ## See what changed
 
 ```
@@ -42,3 +59,5 @@ Status compares the `Setupfile` with the record of the last run and lists each r
 new, changed or was left not met. It runs no check and no fix and writes nothing. It exits with a
 failure status when it lists anything. A requirement counts as changed when its `check`, `fix` or
 `instruction` changes.
+
+A feature's requirements are listed under the feature's name, and status does not fail because of them.
