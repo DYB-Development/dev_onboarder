@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [0.8.0]
+
+- A host adds only the gem and its `Setupfile`, and changes nothing else.
+- A Rails app in development loads `.env` before its own initializers.
+- The setup page is at `/dev_onboarder` in local environments with no route drawn by the app, and uses the app's `ApplicationController`.
+- The setup record is kept inside the clone's git directory, one for each worktree.
+
 ## [0.7.0]
 
 - A failed fix shows what it printed, and a requirement can set a time limit for its fix.
