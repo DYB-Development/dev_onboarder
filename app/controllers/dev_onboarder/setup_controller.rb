@@ -9,8 +9,7 @@ module DevOnboarder
     end
 
     def show
-      @overview = Overview.new(requirements: Requirements.load(Rails.root.join("Setupfile").to_s),
-                               record: Record.new(Rails.root.join(".dev_onboarder.json").to_s))
+      @overview = Engine.overview(Rails.root.to_s)
     end
   end
 end
