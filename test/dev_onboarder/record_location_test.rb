@@ -23,5 +23,14 @@ module DevOnboarder
 
       assert_equal File.join(@dir, ".git", "dev_onboarder.json"), RecordLocation.path(@dir)
     end
+
+    def test_each_git_worktree_keeps_its_own_setup_record
+      system("git", "init", "--quiet", @dir)
+      system("git", "-C", @dir, "commit", "--quiet", "--allow-empty", "-m", "first")
+      worktree = File.join(@dir, "linked")
+      system("git", "-C", @dir, "worktree", "add", "--quiet", worktree)
+
+      refute_equal RecordLocation.path(@dir), RecordLocation.path(worktree)
+    end
   end
 end
