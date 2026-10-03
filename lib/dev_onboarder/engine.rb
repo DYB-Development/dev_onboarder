@@ -23,6 +23,10 @@ module DevOnboarder
       EnvFile.new(app.root.join(".env").to_s).load_into(ENV) if Rails.env.development?
     end
 
+    initializer "dev_onboarder.page_route" do |app|
+      app.routes.prepend { mount DevOnboarder::Engine, at: "/dev_onboarder" if Rails.env.local? }
+    end
+
     server do
       notice = startup_notice(Rails.root.to_s) if Rails.env.local?
       puts notice if notice

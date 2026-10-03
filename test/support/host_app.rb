@@ -28,4 +28,4 @@ FileUtils.mkdir_p(HostApp.root.join("app/views/layouts"))
 File.write(HostApp.root.join("app/views/layouts/host.html.erb"), '<body data-layout="host"><%= yield %></body>')
 
 HostApp.initialize!
-HostApp.routes.draw { mount DevOnboarder::Engine, at: "/setup" }
+HostApp.routes.draw { get "/up", to: proc { [200, {}, ["up"]] } }
