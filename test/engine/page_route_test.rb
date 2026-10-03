@@ -20,5 +20,14 @@ module DevOnboarder
 
       assert_response :success
     end
+
+    def test_an_app_running_in_production_has_no_setup_page
+      Rails.stub(:env, ActiveSupport::EnvironmentInquirer.new("production")) { Rails.application.reload_routes! }
+      get "/dev_onboarder"
+
+      assert_response :not_found
+    ensure
+      Rails.application.reload_routes!
+    end
   end
 end
