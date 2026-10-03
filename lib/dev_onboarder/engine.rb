@@ -12,7 +12,7 @@ module DevOnboarder
     attr_writer :base_controller
 
     def base_controller
-      @base_controller || "ActionController::Base"
+      @base_controller || (Object.const_defined?(:ApplicationController) ? "ApplicationController" : "ActionController::Base")
     end
   end
 

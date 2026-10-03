@@ -18,8 +18,6 @@ class ApplicationController < ActionController::Base
   layout "host"
 end
 
-DevOnboarder.base_controller = "ApplicationController"
-
 File.write(HostApp.root.join(".env"), "DEV_ONBOARDER_HOST_KEY=from the env file\n")
 FileUtils.mkdir_p(HostApp.root.join("config/initializers"))
 File.write(HostApp.root.join("config/initializers/reads_the_environment.rb"),
