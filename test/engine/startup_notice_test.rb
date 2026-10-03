@@ -35,5 +35,16 @@ module DevOnboarder
     ensure
       FileUtils.rm_f(Rails.root.join("Setupfile"))
     end
+
+    def test_an_app_reads_the_setup_record_from_where_the_command_keeps_it
+      File.write(File.join(@dir, "Setupfile"),
+                 'requirement :databases, group: :repo_setup, purpose: "Databases exist", check: "check-db"')
+      system("git", "init", "--quiet", @dir)
+      requirement = Requirements.load(File.join(@dir, "Setupfile")).first
+      Record.new(RecordLocation.path(@dir)).save(databases: Result.new(met: true, checked_at: Time.now,
+                                                                       fingerprint: requirement.fingerprint))
+
+      assert_nil Engine.startup_notice(@dir)
+    end
   end
 end

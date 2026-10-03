@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "lines"
+require_relative "record_location"
 require_relative "requirements"
 require_relative "secret_prompt"
 require_relative "setup"
@@ -10,7 +11,6 @@ require_relative "status"
 module DevOnboarder
   class CLI
     REQUIREMENTS_FILE = "Setupfile"
-    RECORD_FILE = ".dev_onboarder.json"
     ENV_FILE = ".env"
 
     def initialize(argv, out: $stdout, dir: Dir.pwd, shell: Shell.new, clock: -> { Time.now }, input: $stdin)
@@ -113,7 +113,7 @@ module DevOnboarder
     end
 
     def record
-      Record.new(File.join(@dir, RECORD_FILE))
+      Record.new(RecordLocation.path(@dir))
     end
   end
 end

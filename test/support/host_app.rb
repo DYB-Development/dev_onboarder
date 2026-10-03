@@ -18,10 +18,12 @@ class ApplicationController < ActionController::Base
   layout "host"
 end
 
-DevOnboarder.base_controller = "ApplicationController"
-
+File.write(HostApp.root.join(".env"), "DEV_ONBOARDER_HOST_KEY=from the env file\n")
+FileUtils.mkdir_p(HostApp.root.join("config/initializers"))
+File.write(HostApp.root.join("config/initializers/reads_the_environment.rb"),
+           'Rails.configuration.x.read_by_an_initializer = ENV["DEV_ONBOARDER_HOST_KEY"]')
 FileUtils.mkdir_p(HostApp.root.join("app/views/layouts"))
 File.write(HostApp.root.join("app/views/layouts/host.html.erb"), '<body data-layout="host"><%= yield %></body>')
 
 HostApp.initialize!
-HostApp.routes.draw { mount DevOnboarder::Engine, at: "/setup" }
+HostApp.routes.draw { get "/up", to: proc { [200, {}, ["up"]] } }

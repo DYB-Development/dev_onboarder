@@ -4,7 +4,8 @@ One setup command that gets a developer from a fresh clone to a working repo.
 
 ## Install
 
-Add the gem to the repo's `Gemfile` or gemspec development dependencies and run `bundle install`.
+Add the gem to the repo's `Gemfile` and run `bundle install`, then write a `Setupfile`. Nothing else in
+the repo changes: the gem adds no line to its routes, boot code, initializers or `.gitignore`.
 
 ## Declare what the repo needs
 
@@ -53,14 +54,8 @@ key_file "config/master.key", from: "the team lead"
 - `key_file` requires a file to exist and says who to ask for it.
 - Setup asks for nothing when no keyboard is attached, as in CI.
 
-The app reads `.env` when it starts by adding this where it boots:
-
-```ruby
-require "dev_onboarder/env_file"
-DevOnboarder::EnvFile.new(".env").load_into(ENV)
-```
-
-A variable the shell already sets is left as it is.
+A Rails app started in development reads `.env` before its own initializers run, with nothing added to
+the app. A variable the shell already sets is left as it is.
 
 ## Run it
 
@@ -69,8 +64,9 @@ bundle exec dev_onboarder
 ```
 
 The command lists every requirement as met or not met, and exits with a failure status when any is
-still not met. It writes what it found to `.dev_onboarder.json` in the clone, so a second run shows
-when each requirement was last checked. Add that file to the repo's `.gitignore`.
+still not met. It writes what it found to `dev_onboarder.json` inside the clone's git directory, where
+nothing is ever committed, so a second run shows when each requirement was last checked. Each git
+worktree keeps its own record. Outside git, the record is `.dev_onboarder.json` at the repo's root.
 
 ## Declare what one feature needs
 
@@ -96,17 +92,9 @@ every requirement by group with its state and when it was last checked, each fea
 ready, and the command to run. The page reads the `Setupfile` and the setup record. It runs no check and
 no fix.
 
-Mount it for local use only, in `config/routes.rb`:
-
-```ruby
-mount DevOnboarder::Engine, at: "/setup" if Rails.env.local?
-```
-
-To draw the page inside the app's own layout, name the controller it inherits from, in an initializer:
-
-```ruby
-DevOnboarder.base_controller = "ApplicationController"
-```
+When the app runs locally, the page is at `/dev_onboarder`, and it does not exist in production. It is
+drawn inside the app's own layout when the app has an `ApplicationController`. To use another
+controller, set `DevOnboarder.base_controller = "AdminController"`.
 
 When the app's server starts locally and a requirement outside any feature is new, changed or not met,
 the server output carries one line saying how many need setup and the command to run.

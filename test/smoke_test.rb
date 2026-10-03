@@ -74,6 +74,17 @@ class SmokeTest < Minitest::Test
     assert_match(/\ASetupfile line 1: undefined method .requirment.[^\n]*\n\z/, run_command.first)
   end
 
+  def test_the_command_leaves_nothing_in_a_git_repo_to_commit
+    declare MARKER
+    system("git", "init", "--quiet", @dir)
+    system("git", "-C", @dir, "add", "Setupfile")
+    system("git", "-C", @dir, "-c", "user.name=Test", "-c", "user.email=test@example.com", "commit", "--quiet", "-m",
+           "Declare the marker")
+    run_command
+
+    assert_equal "?? marker\n", `git -C #{@dir} status --porcelain`
+  end
+
   private
 
   def declare(requirements)
