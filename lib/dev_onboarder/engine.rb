@@ -2,6 +2,7 @@
 
 require "rails/engine"
 require "keystone_ui"
+require_relative "env_file"
 require_relative "overview"
 require_relative "record_location"
 require_relative "requirements"
@@ -17,6 +18,10 @@ module DevOnboarder
 
   class Engine < ::Rails::Engine
     isolate_namespace DevOnboarder
+
+    initializer "dev_onboarder.load_environment_file", before: :load_config_initializers do |app|
+      EnvFile.new(app.root.join(".env").to_s).load_into(ENV) if Rails.env.development?
+    end
 
     server do
       notice = startup_notice(Rails.root.to_s) if Rails.env.local?
