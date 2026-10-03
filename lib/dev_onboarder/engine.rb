@@ -3,6 +3,7 @@
 require "rails/engine"
 require "keystone_ui"
 require_relative "overview"
+require_relative "record_location"
 require_relative "requirements"
 
 module DevOnboarder
@@ -25,8 +26,12 @@ module DevOnboarder
     def self.startup_notice(root)
       return unless File.exist?(File.join(root, "Setupfile"))
 
+      overview(root).notice
+    end
+
+    def self.overview(root)
       Overview.new(requirements: Requirements.load(File.join(root, "Setupfile")),
-                   record: Record.new(File.join(root, ".dev_onboarder.json"))).notice
+                   record: Record.new(RecordLocation.path(root)))
     end
   end
 end
