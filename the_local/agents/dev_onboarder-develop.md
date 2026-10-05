@@ -29,7 +29,7 @@ A gem that reads a `Setupfile` at the repo's root, checks each requirement it de
 
 ## How to use it
 
-1. Read the repo's existing `Setupfile` if there is one, and keep every key already in it. Keys must be unique across the whole file, including inside `feature` blocks, and a duplicate is refused with the line of each.
+1. Read the repo's existing `Setupfile` if there is one, and keep every key already in it. Keys must be unique across the whole file, including inside `feature` blocks, and a duplicate is refused with the line of each. Without a `Setupfile`, every command prints `This repo has no Setupfile, so there is nothing to set up.` and exits non-zero.
 
 2. Ask the developer what the repo needs that is not already declared. For each item, pick the one-line form below that fits, and fall back to `requirement` only when none does.
 
@@ -55,6 +55,8 @@ A gem that reads a `Setupfile` at the repo's root, checks each requirement it de
 
    - `env(name, from:, optional: false)` — `from` is required and is shown as "Get it from <from>." Setup asks for a missing value only when a keyboard is attached, does not echo it, and writes it to `.env` only. An empty value writes nothing. Its key is the name in lower case.
    - Setup writes to `.env` only when git ignores `.env`. Check the repo's `.gitignore`. If `.env` is not ignored, ask the developer whether to add it, since setup will otherwise only print `<NAME> — add .env to .gitignore, then run setup again to enter its value.`
+   - `.env` must hold only `NAME=value` lines, with no comments, blank lines or quotes. Setup rewrites the whole file in that form when it stores a value.
+   - In a Rails app that has keystone_ui, `.env` is loaded into the environment when the app boots in development, before the app's initializers, and a variable the shell already sets is kept.
    - `optional: true` lists the variable when missing and never fails a run or status. Ask the developer which variables are optional; do not decide it.
    - `key_file(path, from:)` — `from` is required. The path is relative to the repo's root. It is checked and never fixed. Its key is the path with every non-word character written as `_`.
    - Ask the developer where each value is obtained. The `from` text is what a new developer reads, so it must name a real person or place.
@@ -97,11 +99,11 @@ A gem that reads a `Setupfile` at the repo's root, checks each requirement it de
 
 8. Use the other commands for the case each covers:
 
-   - `bundle exec dev_onboarder setup payments` checks, fixes and asks for only that feature's requirements, and exits non-zero when any of them is not met. An unknown name prints `No feature named <name>.` and exits non-zero.
+   - `bundle exec dev_onboarder setup payments` checks, fixes and asks for only that feature's requirements, and exits non-zero when any required one of them is not met. An unknown name prints `No feature named <name>.` and exits non-zero.
    - `bundle exec dev_onboarder status` lists each requirement that is new, changed or was left not met, with a feature's requirements under its name. A requirement counts as changed when its check, fix or instruction changes. With nothing to list it prints `Nothing has changed since your last setup.` It exits non-zero only when a required requirement outside a feature is listed.
-   - `bundle exec dev_onboarder features` lists each feature as ready or not ready. A feature is not ready when any of its requirements is new, changed or not met. It always exits zero.
+   - `bundle exec dev_onboarder features` lists each feature as ready or not ready. A feature is not ready when any of its requirements is new, changed or not met. It exits zero whenever the `Setupfile` loads.
 
-9. In a Rails app that has keystone_ui, point the developer to `/dev_onboarder` on the locally running app. It shows every requirement by group with its state and last check, each feature and whether it is ready, and the command to run. It reads the last recorded run and runs no check and no fix, so a change to the `Setupfile` appears there only after a command has run. When the server starts locally, its output carries one line when any requirement outside a feature is new, changed or not met.
+9. In a Rails app that has keystone_ui, point the developer to `/dev_onboarder` on the locally running app. It shows every requirement by group with its state and last check, each feature and whether it is ready, and the command to run. It reads the last recorded run and runs no check and no fix, so a change to the `Setupfile` appears there only after a command has run. An error in the `Setupfile` is shown on the page as a warning. When the server starts locally, its output carries one line when any requirement outside a feature is new, changed or not met.
 
 ## Conventions
 

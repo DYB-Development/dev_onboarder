@@ -13,7 +13,7 @@ A gem that checks and fixes what a repo needs to run, hooked into any repo that 
 
 ## Interface
 
-- `gem "dev_onboarder", github: "DYB-Development/dev_onboarder", tag: "v0.8.0"` — the `Gemfile` line that adds the gem to the repo.
+- `gem "dev_onboarder", github: "DYB-Development/dev_onboarder", tag: "v0.9.0"` — the `Gemfile` line that adds the gem to the repo.
 - `DevOnboarder.base_controller` — the name of the controller the setup page inherits from, given as a string, in a Rails app with keystone_ui only.
 
 ## How to use it
@@ -23,7 +23,7 @@ A gem that checks and fixes what a repo needs to run, hooked into any repo that 
 3. Add this line to the `Gemfile`, in the group the developer chose:
 
    ```ruby
-   gem "dev_onboarder", github: "DYB-Development/dev_onboarder", tag: "v0.8.0"
+   gem "dev_onboarder", github: "DYB-Development/dev_onboarder", tag: "v0.9.0"
    ```
 
 4. Run `bundle install`. It updates `Gemfile.lock`. No other file in the repo is created or edited: no route, no initializer, no boot code, no `.gitignore` line.
@@ -37,7 +37,7 @@ A gem that checks and fixes what a repo needs to run, hooked into any repo that 
 
 ## Conventions
 
-- Confirm the install with `bundle info dev_onboarder`, which prints version 0.8.0.
+- Confirm the install with `bundle info dev_onboarder`, which prints version 0.9.0.
 - In a Rails app where step 7 set a controller, confirm it with `bin/rails runner -e development 'puts DevOnboarder.base_controller'`, which prints that controller's name.
 - `DevOnboarder.base_controller` exists only when the app is a Rails app and keystone_ui is in the bundle. Never set it without the `defined?(DevOnboarder::Engine)` guard.
 - The setup page is mounted at `/dev_onboarder` by the gem itself when the app runs in development or test, and never in production. Never add a route for it.
