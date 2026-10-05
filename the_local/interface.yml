@@ -1,7 +1,7 @@
 scope: repo setup — the Setupfile that declares what a repo needs, and the command a new developer runs to check and fix it
 
 install:
-  - 'gem "dev_onboarder", github: "DYB-Development/dev_onboarder", tag: "v0.9.0"'
+  - 'gem "dev_onboarder", "~> 0.9"'
   - DevOnboarder.base_controller
 
 develop:
