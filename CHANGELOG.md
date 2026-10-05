@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.9.0]
+
+- The gem is a the_local provider: a host that runs `the_local install` gets info, install and develop locals for the setup tool.
+
 ## [0.8.0]
 
 - A host adds only the gem and its `Setupfile`, and changes nothing else.
