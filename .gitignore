@@ -3,3 +3,6 @@
 /pkg/
 /tmp/
 *.gem
+
+# the_local installs the locals of this gem's dependencies here; they are not part of this gem.
+/.claude/
