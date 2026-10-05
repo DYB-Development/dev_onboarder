@@ -54,8 +54,8 @@ key_file "config/master.key", from: "the team lead"
 - `key_file` requires a file to exist and says who to ask for it.
 - Setup asks for nothing when no keyboard is attached, as in CI.
 
-A Rails app started in development reads `.env` before its own initializers run, with nothing added to
-the app. A variable the shell already sets is left as it is.
+A Rails app that has keystone_ui reads `.env` when it starts in development, before its own
+initializers run, with nothing added to the app. A variable the shell already sets is left as it is.
 
 ## Run it
 
@@ -99,8 +99,8 @@ controller, set `DevOnboarder.base_controller = "AdminController"`.
 When the app's server starts locally and a requirement outside any feature is new, changed or not met,
 the server output carries one line saying how many need setup and the command to run.
 
-A Rails app without keystone_ui gets no page, and a repo with no Rails app is unaffected. Both use the
-command alone. The page is tested against keystone_ui 0.30.
+A Rails app without keystone_ui gets no page, no `.env` loading and no startup line, and a repo with no
+Rails app is unaffected. Both use the command alone. The page is tested against keystone_ui 0.30.
 
 ## When something fails
 
