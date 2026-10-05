@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.9.1]
+
+- The README and the install local add the gem from RubyGems.
+
 ## [0.9.0]
 
 - The gem is a the_local provider: a host that runs `the_local install` gets info, install and develop locals for the setup tool.
