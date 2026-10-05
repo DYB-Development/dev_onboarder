@@ -101,9 +101,9 @@ A gem that reads a `Setupfile` at the repo's root, checks each requirement it de
 
    - `bundle exec dev_onboarder setup payments` checks, fixes and asks for only that feature's requirements, and exits non-zero when any required one of them is not met. An unknown name prints `No feature named <name>.` and exits non-zero.
    - `bundle exec dev_onboarder status` lists each requirement that is new, changed or was left not met, with a feature's requirements under its name. A requirement counts as changed when its check, fix or instruction changes. With nothing to list it prints `Nothing has changed since your last setup.` It exits non-zero only when a required requirement outside a feature is listed.
-   - `bundle exec dev_onboarder features` lists each feature as ready or not ready. A feature is not ready when any of its requirements is new, changed or not met. It exits zero whenever the `Setupfile` loads.
+   - `bundle exec dev_onboarder features` lists each feature as ready or not ready. A feature is not ready when any of its requirements, optional ones included, is new, changed or not met. It exits zero whenever the `Setupfile` loads.
 
-9. In a Rails app that has keystone_ui, point the developer to `/dev_onboarder` on the locally running app. It shows every requirement by group with its state and last check, each feature and whether it is ready, and the command to run. It reads the last recorded run and runs no check and no fix, so a change to the `Setupfile` appears there only after a command has run. An error in the `Setupfile` is shown on the page as a warning. When the server starts locally, its output carries one line when any requirement outside a feature is new, changed or not met.
+9. In a Rails app that has keystone_ui, point the developer to `/dev_onboarder` on the locally running app. It shows every requirement by group with its state and last check, each feature and whether it is ready, and the command to run. It reads the current `Setupfile` and the last recorded run, and runs no check and no fix, so a requirement added to the `Setupfile` shows as new there until a command has run. An error in the `Setupfile` is shown on the page as a warning. When the server starts locally, its output carries one line when any requirement outside a feature is new, changed or not met.
 
 ## Conventions
 

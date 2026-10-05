@@ -4,7 +4,7 @@ One setup command that gets a developer from a fresh clone to a working repo.
 
 ## Install
 
-Add the gem to the repo's `Gemfile` and run `bundle install`, then write a `Setupfile`. Nothing else in
+Add `gem "dev_onboarder", "~> 0.9"` to the repo's `Gemfile` and run `bundle install`, then write a `Setupfile`. Nothing else in
 the repo changes: the gem adds no line to its routes, boot code, initializers or `.gitignore`.
 
 ## Declare what the repo needs
