@@ -1,0 +1,36 @@
+scope: repo setup — the Setupfile that declares what a repo needs, and the command a new developer runs to check and fix it
+
+install:
+  - 'gem "dev_onboarder", github: "DYB-Development/dev_onboarder", tag: "v0.8.0"'
+  - DevOnboarder.base_controller
+
+develop:
+  - Setupfile
+  - requirement
+  - program
+  - ruby_version
+  - brewfile
+  - env
+  - key_file
+  - feature
+  - bundle exec dev_onboarder
+  - bundle exec dev_onboarder status
+  - bundle exec dev_onboarder features
+  - bundle exec dev_onboarder setup
+  - /dev_onboarder
+
+sources:
+  - README.md
+  - lib/dev_onboarder.rb
+  - lib/dev_onboarder/version.rb
+  - lib/dev_onboarder/cli.rb
+  - lib/dev_onboarder/requirements.rb
+  - lib/dev_onboarder/requirement.rb
+  - lib/dev_onboarder/machine_tools.rb
+  - lib/dev_onboarder/secrets.rb
+  - lib/dev_onboarder/setup.rb
+  - lib/dev_onboarder/status.rb
+  - lib/dev_onboarder/record_location.rb
+  - lib/dev_onboarder/engine.rb
+  - config/routes.rb
+  - app/controllers/dev_onboarder/setup_controller.rb
